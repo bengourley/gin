@@ -2,7 +2,7 @@
  * Create the start screen
  */
 
-Game.addScene('start', function (scene, data, run) {
+Game.addScene('start', function (scene, data) {
   scene.context.addClass('start');
   scene.context.append(
     $('<label/>').append(
@@ -22,15 +22,18 @@ Game.addScene('start', function (scene, data, run) {
 Game.addScene('finish', function (scene, data) {
   scene.context.addClass('finish');
   scene.context.append(
-    $('<p/>').text('Finished! Again?').click(function () {
-      Game.runScene('soap', 'slideRight');
-    })
+    $('<p/>')
+      .text('Finished! You scored ' + data.score + '. Again?')
+      .click(function () {
+        Game.runScene('soap', 'slideRight');
+      })
   );
 });
 
 /*
  * Create the game screen
  */
+
 Game.addScene('soap', function (scene, data) {
   
   scene.context.addClass('soap');
@@ -40,6 +43,9 @@ Game.addScene('soap', function (scene, data) {
     id : 'user-controlled-soap-bar',
     scene : scene,
     traits : ['draggable', 'collider']
+  }).setPosition({
+    y : 800,
+    x : 278
   });
 
   // Append the popover
@@ -62,7 +68,7 @@ Game.addScene('soap', function (scene, data) {
 
 }, function (scene) {
 
-  var createTimer = function () {
+  var createTimer = function (scorer) {
 
     var timer = Game.entity({
       id : 'game-timer',
@@ -71,11 +77,11 @@ Game.addScene('soap', function (scene, data) {
     });
 
     timer.setPosition({
-      x : 740,
+      x : 730,
       y : 10
     });
 
-    var seconds = 60;
+    var seconds = 30;
 
     timer.text(seconds);
 
@@ -83,16 +89,51 @@ Game.addScene('soap', function (scene, data) {
       seconds--;
       timer.text(seconds);
       if (seconds === 0) {
-        Game.runScene('finish', 'fade');
         clearInterval(timerInterval);
+        Game.runScene('finish', 'fade', {
+          score : scorer.getScore()
+        });
       }
     }, 1000);
 
   };
 
-  var createEnemies = function () {
+  var createScorer = function () {
 
-    enemyInterval = setInterval(function () {
+    var scorer = Game.entity({
+      id : 'score',
+      scene : scene,
+      traits : ['text', 'position']
+    });
+
+    scorer.setPosition({
+      x : 10,
+      y : 10
+    });
+
+    var score = 0;
+
+    scorer.text(score);
+
+    var ui = {};
+
+    ui.update = function (add) {
+      score += add;
+      scorer.text(score);
+      return ui;
+    };
+
+    ui.getScore = function (add) {
+      return score;
+    };
+
+    return ui;
+
+  };
+
+  var createEnemies = function (scorer) {
+
+    scene.enemyInterval = setInterval(function () {
 
       var now = Date.now();
 
@@ -103,11 +144,22 @@ Game.addScene('soap', function (scene, data) {
         traits : ['collider']
       });
 
-      germ.setPosition({
-        x : Math.random() * 748 - 10,
-        y : Math.random() * 1004 - 10
-      });
-
+      germ
+        .setPosition({
+          x : Math.random() * 748 - 100,
+          y : Math.random() * 1004 - 200
+        })
+        .listen('collision', function (entity) {
+          if (entity.id === 'user-controlled-soap-bar') {
+            germ.life -= 1;
+            if (germ.life === 0) {
+              scorer.update(1);
+              germ.die();
+            }
+          }
+        });
+      
+      germ.life = 30;
 
     }, 2000);
     
@@ -115,11 +167,14 @@ Game.addScene('soap', function (scene, data) {
 
   scene.listen('begin', function () {
 
-    createTimer();
-    createEnemies();
+    var scorer = createScorer();
+    createTimer(scorer);
+    createEnemies(scorer);
 
   });
 
+}, function (scene) {
+  clearInterval(scene.enemyInterval);
 });
 
 /*

@@ -62,6 +62,10 @@
    */
   game.runScene = function (name, transition, data) {
 
+    listeners.forEach(function(l) {
+      console.log(l.event);
+    });
+
     if (!scenes[name])
       throw new Error('A scene named \'' + name + '\' does not exist');
 
@@ -82,9 +86,7 @@
       currentScene.context.show();
     }
 
-    if (previousScene && previousScene.destroy) {
-      previousScene.destroy(previousScene);
-    }
+    if (previousScene) previousScene.destroy();
 
     return game;
 
@@ -93,11 +95,27 @@
   /*
    * Binds a callback to a game event
    */
-  game.listen = function (event, callback) {
+  game.listen = function (event, callback, listener) {
     listeners.push({
       event : event,
-      callback : callback
+      callback : callback,
+      obj : listener
     });
+    return game;
+  };
+
+  /*
+   * Binds a callback to a game event
+   */
+  game.unlisten = function (obj) {
+
+    var newListeners = [];
+    listeners.forEach(function (listener) {
+      if (obj !== listener.obj) {
+        newListeners.push(listener);
+      }
+    });
+    listeners = newListeners;
     return game;
   };
 
@@ -105,11 +123,12 @@
    * Executes all callbacks listening
    * for the given event
    */
-  game.emit = function (event) {
+  game.emit = function (event, data) {
     listeners.forEach(function (listener) {
       if (event === listener.event) {
         listener.callback({
-          name : event
+          name : event,
+          data : data
         });
       }
     });
@@ -163,6 +182,11 @@
     });
 
     properties.scene.addEntity(entity, element);
+
+    entity.die = function () {
+      Game.unlisten(entity);
+      properties.scene.removeEntity(entity, element);
+    };
 
     return entity;
 
@@ -280,25 +304,37 @@
           entities = [];
 
       scene.name = name;
-      scene.destroy = destroy;
+      scene.destroy = function () {
+        if (destroy) destroy(scene);
+        game.unlisten(scene);
+      };
 
       scene.listen = function (event, callback) {
-        game.listen('scene-' + name + '.' + event, callback);
+        game.listen('scene-' + name + '.' + event, callback, scene);
+        return scene;
       };
 
       scene.emit = function (event) {
         game.emit('scene-' + name + '.' + event);
+        return scene;
       };
 
       scene.addEntity = function (entity, element) {
         entities.push(entity);
+        return scene;
       };
 
       scene.getEntities = function () {
         return entities;
       };
 
-      // TODO Need a removeEntity method??
+      scene.removeEntity = function (toRemove, element) {
+        entities = entities.filter(function (entity) {
+          return entity.id !== toRemove.id;
+        });
+        element.remove();
+        return scene;
+      };
 
       scene.context = $('<div/>')
                         .attr('id', 'scene-' + name)

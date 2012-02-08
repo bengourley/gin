@@ -22,7 +22,7 @@ button {
 	font-family: 'Arial', sans-serif;
 	font-size: 20px;
 	border: 1px solid rgba(230, 230, 230, 0.8);
-	background-color: rgba(245, 245, 245, 0.5);
+	background-color: rgba(245, 245, 245, 0.8);
 	color: #eee;
 	text-shadow: 0px 1px 0px rgba(245, 245, 245, 0.8);
 	padding: 10px 45px;
@@ -38,11 +38,11 @@ button {
 	position: absolute;
 	color: #fff;
 	padding: 20px;
-	bottom: 20px;
+	top: 20px;
 	right: 20px;
 	left: 20px;
-	background-color: rgba(0,0,0,0.1);
-	border: 1px solid rgba(0, 0, 0, 0.1);
+	background-color: rgba(0,0,0,0.5);
+	border: 1px solid rgba(0, 0, 0, 0.5);
 	-webkit-border-radius: 5px;
 	font-size: 20px;
 }
@@ -69,8 +69,9 @@ button {
  */
 
 #stage {
-	margin: 0 auto;
-	position: relative;
+	top: 0;
+	left: 0;
+	position: absolute;
 	overflow: hidden;
 }
 
@@ -94,12 +95,12 @@ button {
 /* Start scene */
 
 .start {
-	background-color: #d29a72;
+	background-image: url('/resources/images/start-screen.jpg');
 }
 
 .start label {
 	display: block;
-	margin: 300px auto 0 auto;
+	margin: 800px auto 0 auto;
 	text-align: center;
 }
 
@@ -107,15 +108,14 @@ button {
 
 .soap {
 	background-color: #9c5a39;
+	background-image: url('/resources/images/cracked-skin.jpg');
 }
 
 #user-controlled-soap-bar {
-	background-color: #ffe1ae;
-	width: 200px;
-	height: 100px;
+	background-image: url('/resources/images/soap.png');
+	width: 180px;
+	height: 125px;
 	position: absolute;
-	top: 800px;
-	left: 278px;
 	z-index: 100;
 }
 
@@ -126,13 +126,33 @@ button {
 
 .soap .germ {
 	position: absolute;
-	height: 20px;
-	width: 20px;
-	background-color: #0f0;
+	height: 200px;
+	width: 100px;
+	background-color: rgba(83, 205, 29, 0.7);
 	z-index: 50;
+	-webkit-border-radius: 5px;
+}
+
+.soap #score,
+.soap #game-timer {
+	font-weight: bold;
+	font-size: 30px;
+	background-color: rgba(255, 255, 255, 0.5);
+	-webkit-border-radius: 5px;
+	position: absolute;
+	padding: 10px;
+	border: 1px solid #fff;
+	width: 40px;
+	text-align: center;
+	z-index: 120;
 }
 
 /* Finish scene */
 .finish {
 	background-color: #eee;
+}
+
+.finish p {
+	text-align: center;
+	margin: 40px 0px 40px 0px;
 }
