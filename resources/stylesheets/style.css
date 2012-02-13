@@ -21,16 +21,17 @@ body {
 button {
 	font-family: 'Arial', sans-serif;
 	font-size: 20px;
-	border: 1px solid rgba(230, 230, 230, 0.8);
+	border: 1px solid rgba(255, 255, 255, 0.8);
 	background-color: rgba(245, 245, 245, 0.8);
-	color: #eee;
-	text-shadow: 0px 1px 0px rgba(245, 245, 245, 0.8);
+	text-shadow: 0px 1px 0px rgba(245, 245, 245, 1);
 	padding: 10px 45px;
 	border-radius: 3px;
 	margin: 10px;
-	-webkit-box-shadow: 0px 2px 1px rgba(0,0,0,0.05), inset 0px -1px 0px rgba(100, 100, 100, 0.1);
+	-webkit-box-shadow: 0px 0px 0px 5px rgba(200, 200, 200, 0.3),
+		inset 0px 0px 10px rgba(255, 255, 255, 0.5);
 	cursor: pointer;
 	color: #22428f;
+	font-weight: bold;
 }
 
 .popover {
@@ -41,10 +42,12 @@ button {
 	top: 20px;
 	right: 20px;
 	left: 20px;
-	background-color: rgba(0,0,0,0.5);
-	border: 1px solid rgba(0, 0, 0, 0.5);
+	background-color: rgba(10, 10, 10, 0.5);
+	border: 1px solid rgba(0, 0, 0, 0.3);
 	-webkit-border-radius: 5px;
 	font-size: 20px;
+	text-shadow: 0px -1px 0px rgba(0,0,0,0.3);
+	-webkit-box-shadow: 0px 2px 0px rgba(0,0,0,0.3), inset 0px 1px 0px rgba(255,255,255,0.1);
 }
 
 .popover p {
@@ -145,6 +148,152 @@ button {
 	width: 40px;
 	text-align: center;
 	z-index: 120;
+}
+
+/* Tornado scene */
+.tornado {
+	background-image: url('/resources/images/cracked-skin.jpg');
+}
+
+#user-controlled-tornado {
+	height: 50px;
+	width: 50px;
+	background-color: #eee;
+	position: absolute;
+	z-index: 100;
+	-webkit-border-radius: 100px;
+}
+
+#user-controlled-tornado .tornado-graphic {
+	border-top: 500px solid #999;
+	border-left: 100px solid transparent;
+	border-right: 100px solid transparent;
+	border-bottom: 5px solid transparent;
+	position: absolute;
+	bottom: 100%;
+	left: -75px;
+}
+
+.tornado .less-cracked-skin {
+	background-image: url('/resources/images/less-cracked-skin.jpg');
+}
+
+.tornado .smooth-skin {
+	background-image: url('/resources/images/smooth-skin.jpg');
+}
+
+#crack-1 {
+	background-image: url('/resources/images/less-cracked-skin.jpg');
+	background-position: -432px -605px;
+	height: 308px;
+	width: 336px;
+}
+
+#crack-2 {
+	background-image: url('/resources/images/less-cracked-skin.jpg');
+	background-position: 0px -482px;
+	height: 488px;
+	width: 384px;
+}
+
+#crack-3 {
+	background-image: url('/resources/images/less-cracked-skin.jpg');
+	background-position: -92px -101px;
+	height: 281px;
+	width: 292px;
+}
+
+#crack-4 {
+	background-image: url('/resources/images/less-cracked-skin.jpg');
+	background-position: -540px -101px;
+	height: 166px;
+	width: 155px;
+}
+
+.tornado .smooth-tile {
+	height: 326px;
+	width: 272px;
+	background-repeat: no-repeat;
+}
+
+#smooth-0-0 {
+	background-image: url('/resources/images/tiles/00.png');
+	background-position: 40px 40px;
+}
+
+#smooth-1-0 {
+	background-image: url('/resources/images/tiles/10.png');
+	background-position: 0px 40px;
+}
+
+#smooth-2-0 {
+	background-image: url('/resources/images/tiles/20.png');
+	background-position: 0px 40px;
+}
+
+#smooth-3-0 {
+	background-image: url('/resources/images/tiles/30.png');
+	background-position: 0px 40px;
+}
+
+#smooth-0-1 {
+	background-image: url('/resources/images/tiles/01.png');
+	background-position: 40px 0px;
+}
+
+#smooth-1-1 {
+	background-image: url('/resources/images/tiles/11.png');
+	background-position: 0px 0px;
+}
+
+#smooth-2-1 {
+	background-image: url('/resources/images/tiles/21.png');
+	background-position: 0px 0px;
+}
+
+#smooth-3-1 {
+	background-image: url('/resources/images/tiles/31.png');
+	background-position: 0px 0px;
+}
+
+#smooth-0-2 {
+	background-image: url('/resources/images/tiles/02.png');
+	background-position: 40px -10px;
+}
+
+#smooth-1-2 {
+	background-image: url('/resources/images/tiles/12.png');
+	background-position: 0px -10px;
+}
+
+#smooth-2-2 {
+	background-image: url('/resources/images/tiles/22.png');
+	background-position: 0px -10px;
+}
+
+#smooth-3-2 {
+	background-image: url('/resources/images/tiles/32.png');
+	background-position: 0px -10px;
+}
+
+#smooth-0-3 {
+	background-image: url('/resources/images/tiles/03.png');
+	background-position: 40px -20px;
+}
+
+#smooth-1-3 {
+	background-image: url('/resources/images/tiles/13.png');
+	background-position: 0px -20px;
+}
+
+#smooth-2-3 {
+	background-image: url('/resources/images/tiles/23.png');
+	background-position: 0px -20px;
+}
+
+#smooth-3-3 {
+	background-image: url('/resources/images/tiles/33.png');
+	background-position: 0px -20px;
 }
 
 /* Finish scene */

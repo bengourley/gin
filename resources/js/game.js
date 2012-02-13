@@ -62,10 +62,6 @@
    */
   game.runScene = function (name, transition, data) {
 
-    listeners.forEach(function(l) {
-      console.log(l.event);
-    });
-
     if (!scenes[name])
       throw new Error('A scene named \'' + name + '\' does not exist');
 

@@ -56,7 +56,11 @@
   Game.registerEntityTrait('position', function (entity, element, context) {
     
     var x = 0,
-        y = 0;
+        y = 0,
+        bounds = {
+          x : 10,
+          y : 10
+        };
 
     entity.setPosition = function (pos) {
       x = pos.x || x;
@@ -65,9 +69,9 @@
         left : 0,
         top : 0,
         '-webkit-transform' : 'translate3d(' +
-          Math.max(10, Math.min(x, 758 - element.width())) +
+          Math.max(bounds.x, Math.min(x, 768 - bounds.x - element.width())) +
           'px, ' +
-          Math.max(10, Math.min(y, 994 - element.height())) +
+          Math.max(bounds.y, Math.min(y, 1004 - bounds.y - element.height())) +
           'px, 0px)'
       });
       return entity;
@@ -80,33 +84,40 @@
       };
     };
 
+    entity.setBounds = function (x, y) {
+      bounds.x = x;
+      bounds.y = y;
+      return entity;
+    };
+
+    element.css({
+      position : 'absolute'
+    });
     entity.scene.context.append(element);
 
   });
 
 
-  var detectCollisions = function (scene) {
+  var detectCollisions = function (entity) {
 
-    var colliders = scene.getEntities().filter(function (entity) {
-      return entity.traits.indexOf('collider') !== -1;
+    // Filter out the non colliders and this element
+    var colliders = entity.scene.getEntities().filter(function (e) {
+      return e.traits.indexOf('collider') !== -1 && entity.id !== e.id;
     });
 
-    var a1, a2;
-    for (var i = 0; i < colliders.length - 1; i++) {
-      for (var j = i + 1; j < colliders.length; j++){
-        
-        a1 = colliders[i].getHitArea();
-        a2 = colliders[j].getHitArea();
+    colliders.forEach(function (collider) {
 
-        if (a1.x2 >= a2.x1 && a1.x1 <= a2.x2 &&
+      var a1 = collider.getHitArea(),
+          a2 = entity.getHitArea();
+      
+      if (a1.x2 >= a2.x1 && a1.x1 <= a2.x2 &&
               a1.y2 >= a2.y1 && a1.y1 <= a2.y2) {
-          Game.emit('collision', {
-            entities : { a : colliders[i], b : colliders[j] }
-          });
-        }
-
+        Game.emit('collision', {
+          entities : { a : collider, b : entity }
+        });
       }
-    }
+
+    });
 
   };
 
@@ -116,7 +127,7 @@
 
     entity.setPosition = function (pos) {
       setPosition(pos);
-      detectCollisions(entity.scene);
+      detectCollisions(entity);
       return entity;
     };
 
@@ -138,10 +149,9 @@
       if (name === 'collision') {
       
         cb = function (event) {
-          console.log(event);
-          if (event.data.entities.a === entity) {
+          if (event.data.entities.a.id === entity.id) {
             callback(event.data.entities.b);
-          } else if (event.data.entities.b === entity) {
+          } else if (event.data.entities.b.id === entity.id) {
             callback(event.data.entities.a);
           }
         };
@@ -149,17 +159,55 @@
       }
       
       listen(name, cb);
-
+      return entity;
     };
 
   }, ['position', 'listener']);
 
-  Game.registerEntityTrait('listener', function (entity, element, context){
+  Game.registerEntityTrait('listener', function (entity, element, context) {
     
     entity.listen = function (name, callback) {
       Game.listen(name, callback, entity);
     };
 
   });
+
+  Game.registerEntityTrait('opacity', function (entity, element, context) {
+
+    var opacity = 1;
+    
+    entity.setOpacity = function (o) {
+      opacity = o;
+      element.css({
+        opacity : o
+      });
+      return entity;
+    };
+
+    entity.getOpactiy = function () {
+      return opacity;
+    };
+
+  });
+
+  Game.registerEntityTrait('class', function (entity, element, context) {
+    
+    entity.setClass = function (cn) {
+      element.addClass(cn);
+      return entity;
+    };
+
+  });
+
+  Game.registerEntityTrait('dompuppet', function (entity, element, context) {
+
+    var puppet;
+    
+    entity.puppet = function (el) {
+      puppet = el;
+      element.append(puppet);
+    };
+
+  }, ['position']);
 
 }());

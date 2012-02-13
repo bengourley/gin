@@ -31,7 +31,7 @@ Game.addScene('finish', function (scene, data) {
 });
 
 /*
- * Create the game screen
+ * Create the soap game screen
  */
 
 Game.addScene('soap', function (scene, data) {
@@ -81,16 +81,16 @@ Game.addScene('soap', function (scene, data) {
       y : 10
     });
 
-    var seconds = 30;
+    var seconds = 1;
 
     timer.text(seconds);
 
     var timerInterval = setInterval(function () {
       seconds--;
       timer.text(seconds);
-      if (seconds === 0) {
+      if (seconds <= 0) {
         clearInterval(timerInterval);
-        Game.runScene('finish', 'fade', {
+        Game.runScene('tornado', 'fade', {
           score : scorer.getScore()
         });
       }
@@ -175,6 +175,111 @@ Game.addScene('soap', function (scene, data) {
 
 }, function (scene) {
   clearInterval(scene.enemyInterval);
+});
+
+Game.addScene('tornado', function (scene) {
+
+  scene.context.addClass('tornado');
+
+  // Create the tornado entity
+  var tornado = Game.entity({
+    id : 'user-controlled-tornado',
+    scene : scene,
+    traits : ['draggable', 'collider', 'dompuppet']
+  }).setPosition({
+    y : 800,
+    x : 278
+  }).puppet($('<div/>').addClass('tornado-graphic'));
+
+  // Append the popover
+  scene.context.append(
+    $('<div/>')
+      .addClass('popover')
+      .append(
+        $('<p/>')
+          .text('Now use the tornado to moisturise the skin')
+      )
+      .append(
+        $('<button/>')
+          .text('Start')
+          .bind('click', function () {
+            $(this).parent().remove();
+            scene.emit('begin');
+          })
+      )
+  );
+
+}, function (scene) {
+  
+  var cracks = [
+    { y : 605, x : 432 },
+    { y : 482, x : 0 },
+    { y : 101, x : 92 },
+    { y : 101, x : 540 }
+  ];
+
+  scene.listen('begin', function () {
+
+    cracks.forEach(function (c, i) {
+
+      var crack = Game.entity({
+        id : 'crack-' + (i + 1),
+        scene : scene,
+        traits : ['collider', 'opacity']
+      })
+        .setBounds(0, 0)
+        .setPosition({
+          y : c.y,
+          x : c.x
+        }).listen('collision', function (entity) {
+          if (entity.id === 'user-controlled-tornado') {
+            if (crack.life < 1) {
+              crack.life += 0.01;
+              crack.setOpacity(crack.life);
+            }
+          }
+        });
+
+      crack.life = 0;
+      crack.setOpacity(0);
+
+    });
+
+    var tiles = [];
+    for (var i = 0; i < 4; i++) {
+      for (var j = 0; j < 4; j++) {
+        tiles.push(
+          Game.entity({
+            id : 'smooth-' + i + '-' + j,
+            scene : scene,
+            traits : ['collider', 'opacity', 'class']
+          })
+            .setBounds(-40, -40)
+            .setPosition({
+              x : (i * 192) - 40,
+              y : (j * 256) - 40
+            })
+            .setClass('smooth-tile')
+            .setOpacity(0)
+        );
+      }
+    }
+
+    tiles.forEach(function (tile) {
+      tile
+        .listen('collision', function (entity) {
+          if (entity.id === 'user-controlled-tornado') {
+            if (tile.life < 1) {
+              tile.life += 0.007;
+              tile.setOpacity(tile.life);
+            }
+          }
+        });
+        tile.life = 0;
+    });
+
+  });
+
 });
 
 /*
