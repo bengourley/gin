@@ -340,6 +340,12 @@ Game.listen('ready', function () {
 
 });
 
+// Run init method
+Game.init({
+  height : 1004,
+  width : 768
+});
+
 /*
  * Deal with rotation
  */
