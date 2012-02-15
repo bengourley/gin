@@ -30,11 +30,11 @@
   /*
    * Initialise the game.
    */
-  game.init = function () {
+  game.init = function (options) {
     stage = $('<div/>')
               .attr('id', 'stage')
-              .height(1004)
-              .width(768);
+              .height(options.height)
+              .width(options.width);
     $('body')
       .append(stage)
       .bind('touchmove', function (e) {
@@ -352,8 +352,5 @@
 
   // Expose the game object globally
   window.Game = game;
-
-  // Run the init method on window#load
-  window.addEventListener('load', Game.init);
 
 }());
