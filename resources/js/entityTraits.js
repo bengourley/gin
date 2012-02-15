@@ -15,13 +15,13 @@
               e.targetTouches[0].pageY - element.offset().top :
               e.clientY - element.offset().top
       };
-      context.bind('touchmove.soapdrag mousemove.soapdrag', trait.updatePosition);
-      context.bind('touchend.soapdrag mouseup.soapdrag', trait.endDrag);
+      context.bind('touchmove.drag mousemove.drag', trait.updatePosition);
+      context.bind('touchend.drag mouseup.drag', trait.endDrag);
     };
 
     trait.endDrag = function (e) {
       context.unbind(
-        'touchmove.soapdrag touchend.soapdrag mousemove.soapdrag mouseup.soapdrag'
+        'touchmove.drag touchend.drag mousemove.drag mouseup.drag'
       );
     };
 
@@ -41,11 +41,9 @@
 
     };
 
-    element.bind('touchstart.soapdrag mousedown.soapdrag', trait.startDrag);
-
+    element.bind('touchstart.drag mousedown.drag', trait.startDrag);
 
   }, ['position']);
-
 
   Game.registerEntityTrait('text', function (entity, element, context) {
     entity.text = function (text) {
@@ -69,9 +67,13 @@
         left : 0,
         top : 0,
         '-webkit-transform' : 'translate3d(' +
-          Math.max(bounds.x, Math.min(x, 768 - bounds.x - element.width())) +
+          (bounds.x || bounds.x === 0
+            ? Math.max(bounds.x, Math.min(x, 768 - bounds.x - element.width()))
+            : x) +
           'px, ' +
-          Math.max(bounds.y, Math.min(y, 1004 - bounds.y - element.height())) +
+          (bounds.y || bounds.y === 0
+          ? Math.max(bounds.y, Math.min(y, 1004 - bounds.y - element.height()))
+          : y) +
           'px, 0px)'
       });
       return entity;
@@ -97,36 +99,35 @@
 
   });
 
-
-  var detectCollisions = function (entity) {
-
-    // Filter out the non colliders and this element
-    var colliders = entity.scene.getEntities().filter(function (e) {
-      return e.traits.indexOf('collider') !== -1 && entity.id !== e.id;
-    });
-
-    colliders.forEach(function (collider) {
-
-      var a1 = collider.getHitArea(),
-          a2 = entity.getHitArea();
-      
-      if (a1.x2 >= a2.x1 && a1.x1 <= a2.x2 &&
-              a1.y2 >= a2.y1 && a1.y1 <= a2.y2) {
-        Game.emit('collision', {
-          entities : { a : collider, b : entity }
-        });
-      }
-
-    });
-
-  };
-
   Game.registerEntityTrait('collider', function (entity, element, context) {
 
     var setPosition = entity.setPosition;
+    
+    var detectCollisions = function (entity) {
+
+      // Filter out the non colliders and this element
+      var colliders = entity.scene.getEntities().filter(function (e) {
+        return e.traits.indexOf('collider') !== -1 && entity.id !== e.id;
+      });
+
+      colliders.forEach(function (collider) {
+
+        var a1 = collider.getHitArea(),
+            a2 = entity.getHitArea();
+        
+        if (a1.x2 >= a2.x1 && a1.x1 <= a2.x2 &&
+                a1.y2 >= a2.y1 && a1.y1 <= a2.y2) {
+          Game.emit('collision', {
+            entities : { a : collider, b : entity }
+          });
+        }
+
+      });
+
+    };
 
     entity.setPosition = function (pos) {
-      setPosition(pos);
+      if (pos) setPosition(pos);
       detectCollisions(entity);
       return entity;
     };
@@ -206,6 +207,143 @@
     entity.puppet = function (el) {
       puppet = el;
       element.append(puppet);
+      return entity;
+    };
+
+  }, ['position']);
+
+  Game.registerEntityTrait('transition', function (entity, element, context) {
+    
+    entity.getTransitionManager = function () {
+
+      var transition = {},
+          start,
+          keyframes = [],
+          callback;
+
+      transition.start = function (css) {
+        start = css;
+        return transition;
+      };
+
+      transition.callback = function (cb) {
+        callback = cb;
+        return transition;
+      };
+
+      transition.keyframe = function (time, easing, css) {
+        keyframes.push({
+          time : time,
+          css : css,
+          easing : easing
+        });
+        return transition;
+      };
+
+      transition.run = function () {
+
+        element.css(start);
+
+        (function runone (keyframe) {
+          
+          if (!keyframe) {
+
+            return callback;
+
+          } else {
+          
+            var after = runone(keyframes.shift());
+            return function () {
+              element.animate(keyframe.css, keyframe.time, keyframe.easing, after);
+            };
+
+          }
+
+        }(keyframes.shift())());
+
+        return transition;
+
+      };
+
+      return transition;
+
+    };
+
+  }, ['position']);
+
+  Game.registerEntityTrait('followinput', function (entity, element, context) {
+    
+    context.bind('mousedown.follow touchstart.follow', function (e) {
+
+      var currentPos = entity.getPosition();
+
+      var x = e.targetTouches ?
+                e.targetTouches[0].pageX :
+                e.clientX,
+          y = e.targetTouches ?
+                e.targetTouches[0].pageY :
+                e.clientY;
+      var bounds = {
+        x : 10, y : 10
+      };
+
+      var deltaX = x - currentPos.x,
+          deltaY = y - currentPos.y;
+
+      var distance = Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2));
+
+      entity.animation = {
+        start : Date.now(),
+        duration : distance * 2,
+        startPos : currentPos,
+        endPos : { x : x, y : y }
+      };
+
+      element.animate({
+        top : 0,
+        '-webkit-transform' : 'translate3d(' +
+          (bounds.x || bounds.x === 0
+            ? Math.max(bounds.x, Math.min(x, 768 - bounds.x - element.width()))
+            : x) +
+          'px, ' +
+          (bounds.y || bounds.y === 0
+            ? Math.max(bounds.y, Math.min(y, 1004 - bounds.y - element.height()))
+            : y) +
+            'px, 0px)'
+      }, distance * 2, 'ease-in-out');
+
+    });
+
+    entity.getPosition = function () {
+      
+      if (!entity.animation) {
+        return { x : 0, y : 0 };
+      } else {
+        var progress = entity.animation.duration / entity.animation.start - Date.now();
+        if (progress < 1) {
+          return {
+            x : entity.animation.startPos.x -
+              (entity.animation.startPos.x - entity.animation.endPos.x) * progress,
+            y : entity.animation.startPos.y -
+              (entity.animation.startPos.y - entity.animation.endPos.y) * progress
+          };
+        } else {
+          return entity.animation.endPos;
+        }
+      }
+
+    };
+
+    var checkInterval = setInterval(function () {
+      entity.setPosition(null);
+    }, 10);
+
+    var die = entity.die;
+
+    entity.die = function () {
+      clearInterval(checkInterval);
+      context.unbind('mousedown.follow touchstart.follow');
+      die();
     };
 
   }, ['position']);

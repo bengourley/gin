@@ -155,6 +155,8 @@
         element = $('<div/>')
                     .attr('id', properties.id)
                     .addClass(properties.elementClass || '');
+    
+    entity.traits = entity.traits || [];
 
     var appliedTraits = [];
     // Recursively apply trait dependencies

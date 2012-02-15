@@ -182,10 +182,10 @@ Game.addScene('tornado', function (scene) {
   scene.context.addClass('tornado');
 
   // Create the tornado entity
-  var tornado = Game.entity({
+  scene.tornado = Game.entity({
     id : 'user-controlled-tornado',
     scene : scene,
-    traits : ['draggable', 'collider', 'dompuppet']
+    traits : ['collider', 'dompuppet', 'followinput']
   }).setPosition({
     y : 800,
     x : 278
@@ -277,6 +277,55 @@ Game.addScene('tornado', function (scene) {
         });
         tile.life = 0;
     });
+
+    var createDroplet = function () {
+      
+      scene.tornado.getPosition();
+      
+      var drop = Game.entity({
+        id : 'moisturiser-' + Date.now(),
+        scene : scene,
+        traits : ['transition', 'class']
+      })
+        .setBounds(false, false)
+        .setClass('droplet');
+
+      var transition = drop.getTransitionManager();
+
+      tornadoPosition = scene.tornado.getPosition();
+
+      var angle = Math.random() * (2 * Math.PI);
+
+      var deltaX = Math.sin(angle) * 200;
+      var deltaY = Math.cos(angle) * 200;
+      
+      transition
+        .start({
+          '-webkit-transform' : 'translate3d(' +
+            tornadoPosition.x + 'px, ' + tornadoPosition.y + 'px, 0px)'
+        })
+        .keyframe(900, 'ease-in', {
+          '-webkit-transform' : 'translate3d(' +
+            (tornadoPosition.x + deltaX / 2) + 'px, ' + (tornadoPosition.y + deltaY / 2) + 'px, 0px)' +
+            ' scale(1.5)'
+        })
+        .keyframe(1400, 'ease-out', {
+          '-webkit-transform' : 'translate3d(' +
+            (tornadoPosition.x + deltaX) + 'px, ' + (tornadoPosition.y + deltaY) + 'px, 0px)' +
+            ' scale(0)'
+        })
+        .callback(function () {
+          drop.die();
+        })
+        .run();
+
+      scene.moisturiserTimeout = setTimeout(function () {
+        createDroplet();
+      }, 100 + (Math.random() * 500));
+
+    };
+
+    createDroplet();
 
   });
 
