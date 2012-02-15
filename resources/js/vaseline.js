@@ -341,9 +341,11 @@ Game.listen('ready', function () {
 });
 
 // Run init method
-Game.init({
-  height : 1004,
-  width : 768
+window.addEventListener('load', function () {
+  Game.init({
+    height : 1004,
+    width : 768
+  });
 });
 
 /*
