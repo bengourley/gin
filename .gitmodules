@@ -1,0 +1,3 @@
+[submodule "resources/js/gin"]
+	path = resources/js/gin
+	url = git@github.com:bengourley/gin.git
