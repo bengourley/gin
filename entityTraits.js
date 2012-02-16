@@ -273,8 +273,7 @@
 
   Game.registerEntityTrait('followinput', function (entity, element, context) {
     
-    context.bind('mousedown.follow touchstart.follow', function (e) {
-
+    var move = function (e) {
       var currentPos = entity.getPosition();
 
       var x = e.targetTouches ?
@@ -294,7 +293,7 @@
 
       entity.animation = {
         start : Date.now(),
-        duration : distance * 2,
+        duration : 2 * distance,
         startPos : currentPos,
         endPos : { x : x, y : y }
       };
@@ -310,8 +309,17 @@
             ? Math.max(bounds.y, Math.min(y, 1004 - bounds.y - element.height()))
             : y) +
             'px, 0px)'
-      }, distance * 2, 'ease-in-out');
+      }, entity.animation.duration, 'ease-in-out');
+    };
 
+    context.bind('mousedown.follow touchstart.follow', function (e) {
+      // Throttle these events
+      context.bind('mousemove.follow touchmove.follow', move);
+      move(e);
+    });
+
+    context.bind('mouseup.follow touchend.follow', function (e) {
+      context.unbind('mousemove.follow touchmove.follow');
     });
 
     entity.getPosition = function () {
@@ -319,7 +327,7 @@
       if (!entity.animation) {
         return { x : 0, y : 0 };
       } else {
-        var progress = entity.animation.duration / entity.animation.start - Date.now();
+        var progress =  (Date.now() - entity.animation.start) / entity.animation.duration;
         if (progress < 1) {
           return {
             x : entity.animation.startPos.x -
@@ -336,7 +344,7 @@
 
     var checkInterval = setInterval(function () {
       entity.setPosition(null);
-    }, 10);
+    }, 50);
 
     var die = entity.die;
 
