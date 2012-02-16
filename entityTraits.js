@@ -357,3 +357,24 @@
   }, ['position']);
 
 }());
+
+Game.registerEntityTrait('lifespan', function (entity, element, context) {
+  
+  entity.lifespan = 0;
+
+  entity.startLife = function(callback) {
+    if (entity.lifespan > 0) {
+      setTimeout(function() {
+        entity.die();
+        if (callback !== undefined) {
+          callback();
+        }
+      },
+      entity.lifespan)
+    }
+    else {
+      throw new Error('An entity\'s life can\'t start without a lifespan greater than 0!'); 
+    }
+  };
+
+});
