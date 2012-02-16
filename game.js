@@ -5,6 +5,8 @@
  * a public interface at window#Game.
  *
  * Author: Ben Gourley - 2012
+ * Collaborators:
+ *  - Ben Constable (BenConstable)
  */
 
 (function () {
