@@ -68,11 +68,11 @@
         top : 0,
         '-webkit-transform' : 'translate3d(' +
           (bounds.x || bounds.x === 0
-            ? Math.max(bounds.x, Math.min(x, Game.width() - bounds.x - element.width()))
+            ? Math.max(bounds.x, Math.min(x, 768 - bounds.x - element.width()))
             : x) +
           'px, ' +
           (bounds.y || bounds.y === 0
-          ? Math.max(bounds.y, Math.min(y, Game.height() - bounds.y - element.height()))
+          ? Math.max(bounds.y, Math.min(y, 1004 - bounds.y - element.height()))
           : y) +
           'px, 0px)'
       });
@@ -302,11 +302,11 @@
         top : 0,
         '-webkit-transform' : 'translate3d(' +
           (bounds.x || bounds.x === 0
-            ? Math.max(bounds.x, Math.min(x, Game.width() - bounds.x - element.width()))
+            ? Math.max(bounds.x, Math.min(x, 768 - bounds.x - element.width()))
             : x) +
           'px, ' +
           (bounds.y || bounds.y === 0
-            ? Math.max(bounds.y, Math.min(y, Game.height() - bounds.y - element.height()))
+            ? Math.max(bounds.y, Math.min(y, 1004 - bounds.y - element.height()))
             : y) +
             'px, 0px)'
       }, entity.animation.duration, 'ease-in-out');
@@ -375,6 +375,44 @@ Game.registerEntityTrait('lifespan', function (entity, element, context) {
     else {
       throw new Error('An entity\'s life can\'t start without a lifespan greater than 0!'); 
     }
+
+    return entity;
   };
 
 });
+
+Game.registerEntityTrait('animated-sprite', function (entity, element, context) {
+  
+  entity.animateSprite = function(animationData) {
+      
+      // Set initial sprite position
+      if (animationData.currentPos === undefined) {
+        animationData.currentPos = 0;
+      }
+
+      // Check for no offset
+      if (animationData.offset === undefined) {
+        animationData.offset = 0;  
+      }
+
+      // Update parameters
+      animationData.frames -= 1;
+      animationData.currentPos += (animationData.height + animationData.offset);
+
+      // Update sprite position
+      element.css({
+        backgroundPosition : '0px -' + animationData.currentPos + 'px'
+      });
+      
+      // If there are still frames left, recurse
+      if (animationData.frames > 0) {
+        setTimeout(function() {
+          entity.animateSprite(animationData);
+        },
+        1000 / animationData.fps)
+      }
+
+      return entity;
+  };
+
+}, ['position']);
