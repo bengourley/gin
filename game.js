@@ -49,6 +49,20 @@
   };
 
   /*
+   * Expose canvas width.
+   */
+  game.width = function() {
+    return stage.width();  
+  };
+
+  /*
+   * Expose canvas height.
+   */
+  game.height = function() {
+    return stage.height();
+  };
+
+  /*
    * Add a scene to the game
    */
   game.addScene = function (name, init, run, destroy) {

@@ -68,11 +68,11 @@
         top : 0,
         '-webkit-transform' : 'translate3d(' +
           (bounds.x || bounds.x === 0
-            ? Math.max(bounds.x, Math.min(x, 768 - bounds.x - element.width()))
+            ? Math.max(bounds.x, Math.min(x, Game.width() - bounds.x - element.width()))
             : x) +
           'px, ' +
           (bounds.y || bounds.y === 0
-          ? Math.max(bounds.y, Math.min(y, 1004 - bounds.y - element.height()))
+          ? Math.max(bounds.y, Math.min(y, Game.height() - bounds.y - element.height()))
           : y) +
           'px, 0px)'
       });
@@ -302,11 +302,11 @@
         top : 0,
         '-webkit-transform' : 'translate3d(' +
           (bounds.x || bounds.x === 0
-            ? Math.max(bounds.x, Math.min(x, 768 - bounds.x - element.width()))
+            ? Math.max(bounds.x, Math.min(x, Game.width() - bounds.x - element.width()))
             : x) +
           'px, ' +
           (bounds.y || bounds.y === 0
-            ? Math.max(bounds.y, Math.min(y, 1004 - bounds.y - element.height()))
+            ? Math.max(bounds.y, Math.min(y, Game.height() - bounds.y - element.height()))
             : y) +
             'px, 0px)'
       }, entity.animation.duration, 'ease-in-out');
