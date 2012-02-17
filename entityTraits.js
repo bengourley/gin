@@ -390,14 +390,9 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
         animationData.currentPos = 0;
       }
 
-      // Check for no offset
-      if (animationData.offset === undefined) {
-        animationData.offset = 0;  
-      }
-
       // Update parameters
       animationData.frames -= 1;
-      animationData.currentPos += (animationData.height + animationData.offset);
+      animationData.currentPos += animationData.height;
 
       // Update sprite position
       element.css({
