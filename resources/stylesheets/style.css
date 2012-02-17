@@ -67,6 +67,20 @@ button {
 	right: 0;
 }
 
+#score,
+#game-timer {
+	font-weight: bold;
+	font-size: 30px;
+	background-color: rgba(255, 255, 255, 0.5);
+	-webkit-border-radius: 5px;
+	position: absolute;
+	padding: 10px;
+	border: 1px solid #fff;
+	width: 40px;
+	text-align: center;
+	z-index: 120;
+}
+
 /*
  * Stage element
  */
@@ -133,11 +147,6 @@ button {
 	z-index: 100;
 }
 
-#game-timer {
-	position: absolute;
-	z-index: 200;
-}
-
 .soap .germ {
 	position: absolute;
 	height: 100px;
@@ -146,20 +155,6 @@ button {
 	background: transparent url("/resources/images/germ-sprite.png") no-repeat 0 0;
 	z-index: 50;
 	-webkit-border-radius: 5px;
-}
-
-.soap #score,
-.soap #game-timer {
-	font-weight: bold;
-	font-size: 30px;
-	background-color: rgba(255, 255, 255, 0.5);
-	-webkit-border-radius: 5px;
-	position: absolute;
-	padding: 10px;
-	border: 1px solid #fff;
-	width: 40px;
-	text-align: center;
-	z-index: 120;
 }
 
 /* Tornado scene */

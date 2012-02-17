@@ -72,7 +72,7 @@ Game.addScene('finish', function (scene, data) {
  * Create the soap game screen
  */
 
-Game.addScene('soap', function (scene, data) {
+Game.addScene('soap', function (scene) {
   
   scene.context.addClass('soap');
   
@@ -105,69 +105,6 @@ Game.addScene('soap', function (scene, data) {
   );
 
 }, function (scene) {
-
-  var createTimer = function (scorer) {
-
-    var timer = Game.entity({
-      id : 'game-timer',
-      scene : scene,
-      traits : ['text', 'position']
-    });
-
-    timer.setPosition({
-      x : 730,
-      y : 10
-    });
-
-    var seconds = 30;
-
-    timer.text(seconds);
-
-    var timerInterval = setInterval(function () {
-      seconds--;
-      timer.text(seconds);
-      if (seconds <= 0) {
-        clearInterval(timerInterval);
-        Game.runScene('game-transition', 'fade', {
-          score : scorer.getScore()
-        });
-      }
-    }, 1000);
-
-  };
-
-  var createScorer = function () {
-
-    var scorer = Game.entity({
-      id : 'score',
-      scene : scene,
-      traits : ['text', 'position']
-    });
-
-    scorer.setPosition({
-      x : 10,
-      y : 10
-    });
-
-    var score = 0;
-
-    scorer.text(score);
-
-    var ui = {};
-
-    ui.update = function (add) {
-      score += add;
-      scorer.text(score);
-      return ui;
-    };
-
-    ui.getScore = function (add) {
-      return score;
-    };
-
-    return ui;
-
-  };
 
   var createEnemies = function (scorer) {
 
@@ -212,8 +149,29 @@ Game.addScene('soap', function (scene, data) {
 
   scene.listen('begin', function () {
 
-    var scorer = createScorer();
-    createTimer(scorer);
+    // Setup score
+    var scorer = Game.entityCreator.createScorer({
+      id : 'score',
+      scene: scene,
+      x : 10,
+      y : 10  
+    });
+
+    // Setup time limit
+    Game.entityCreator.createTimer({
+      id : 'game-timer',
+      scene : scene,
+      x : 730,
+      y : 10,
+      seconds : 1
+    },
+      function () {
+        Game.runScene('game-transition', 'fade', {
+          score : scorer.getScore()
+        });
+      }
+    );
+
     createEnemies(scorer);
 
   });
@@ -269,63 +227,84 @@ Game.addScene('tornado', function (scene) {
 
   scene.listen('begin', function () {
 
-    cracks.forEach(function (c, i) {
+    var createCracks = function(scorer) {
 
-      var crack = Game.entity({
-        id : 'crack-' + (i + 1),
-        scene : scene,
-        traits : ['collider', 'opacity']
-      })
-        .setBounds(0, 0)
-        .setPosition({
-          y : c.y,
-          x : c.x
-        }).listen('collision', function (entity) {
-          if (entity.id === 'user-controlled-tornado') {
-            if (crack.life < 1) {
-              crack.life += 0.01;
-              crack.setOpacity(crack.life);
+      cracks.forEach(function (c, i) {
+
+        var crack = Game.entity({
+          id : 'crack-' + (i + 1),
+          scene : scene,
+          traits : ['collider', 'opacity']
+        })
+          .setBounds(0, 0)
+          .setPosition({
+            y : c.y,
+            x : c.x
+          }).listen('collision', function (entity) {
+            if (entity.id === 'user-controlled-tornado') {
+              if (crack.life < 1) {
+
+                crack.life += 0.01;
+                crack.setOpacity(crack.life);
+
+                scorer.updateScore(0.25);
+                
+                // Player wins!
+                if (scorer.getScore() >= 100) {
+                  Game.runScene('finish', 'fade', {
+                    score : scorer.getScore()
+                  });  
+                }
+
+                if (!(scorer.getScore() % 1)) {
+                  scorer.updateDisplay(
+                    function(score) {
+                      return score + '%';            
+                    }
+                  );
+                }
+              }
             }
-          }
-        });
+          });
 
-      crack.life = 0;
-      crack.setOpacity(0);
+        crack.life = 0;
+        crack.setOpacity(0);
 
-    });
+      });
 
-    var tiles = [];
-    for (var i = 0; i < 4; i++) {
-      for (var j = 0; j < 4; j++) {
-        tiles.push(
-          Game.entity({
-            id : 'smooth-' + i + '-' + j,
-            scene : scene,
-            traits : ['collider', 'opacity', 'class']
-          })
-            .setBounds(-40, -40)
-            .setPosition({
-              x : (i * 192) - 40,
-              y : (j * 256) - 40
+      var tiles = [];
+      for (var i = 0; i < 4; i++) {
+        for (var j = 0; j < 4; j++) {
+          tiles.push(
+            Game.entity({
+              id : 'smooth-' + i + '-' + j,
+              scene : scene,
+              traits : ['collider', 'opacity', 'class']
             })
-            .setClass('smooth-tile')
-            .setOpacity(0)
-        );
+              .setBounds(-40, -40)
+              .setPosition({
+                x : (i * 192) - 40,
+                y : (j * 256) - 40
+              })
+              .setClass('smooth-tile')
+              .setOpacity(0)
+          );
+        }
       }
-    }
 
-    tiles.forEach(function (tile) {
-      tile
-        .listen('collision', function (entity) {
-          if (entity.id === 'user-controlled-tornado') {
-            if (tile.life < 1) {
-              tile.life += 0.007;
-              tile.setOpacity(tile.life);
+      tiles.forEach(function (tile) {
+        tile
+          .listen('collision', function (entity) {
+            if (entity.id === 'user-controlled-tornado') {
+              if (tile.life < 1) {
+                tile.life += 0.007;
+                tile.setOpacity(tile.life);
+              }
             }
-          }
-        });
-        tile.life = 0;
-    });
+          });
+          tile.life = 0;
+      });
+    }
 
     var createDroplet = function () {
       
@@ -370,10 +349,34 @@ Game.addScene('tornado', function (scene) {
 
       scene.moisturiserTimeout = setTimeout(function () {
         createDroplet();
-      }, 100 + (Math.random() * 500));
+      }, 100 + (Math.random() * 100));
 
     };
 
+    // Setup score
+    var scorer = Game.entityCreator.createScorer({
+      id : 'score',
+      scene : scene,
+      x : 10,
+      y : 10
+    });
+
+    // Setup time limit
+    Game.entityCreator.createTimer({
+      id : 'game-timer',
+      scene : scene,
+      x : 730,
+      y : 10,
+      seconds : 30
+    },
+      function () {
+        Game.runScene('finish', 'fade', {
+          score : scorer.getScore()
+        });
+      }
+    );
+
+    createCracks(scorer);
     createDroplet();
 
   });
