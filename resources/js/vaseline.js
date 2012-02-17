@@ -31,6 +31,44 @@ Game.addScene('finish', function (scene, data) {
 });
 
 /*
+ * Create the between-games menu screen
+ */
+
+ Game.addScene('game-transition', function (scene, data) {
+  scene.context.addClass('game-transition');
+  
+  // Show score for previous game
+  scene.context.append(
+    $('<p/>')
+      .html('Well done! You scored <strong>' + data.score + '</strong>.')
+      .addClass('score')
+    );
+  
+  // Show a button to play the previous game again
+  scene.context.append(
+    $('<label/>').append(
+      $('<button/>')
+        .text('Play again')
+        .bind('click', function() {
+          Game.runScene('soap', 'slideRight');
+        })
+    )
+  );
+
+  // Show a button to go to the tornado scene
+  scene.context.append(
+    $('<label/>').append(
+      $('<button/>')
+        .text('Play the next game')
+        .bind('click', function() {
+          Game.runScene('tornado', 'slideLeft');
+        })
+    )
+  );
+
+ });
+
+/*
  * Create the soap game screen
  */
 
@@ -81,7 +119,7 @@ Game.addScene('soap', function (scene, data) {
       y : 10
     });
 
-    var seconds = 1;
+    var seconds = 30;
 
     timer.text(seconds);
 
@@ -90,7 +128,7 @@ Game.addScene('soap', function (scene, data) {
       timer.text(seconds);
       if (seconds <= 0) {
         clearInterval(timerInterval);
-        Game.runScene('tornado', 'fade', {
+        Game.runScene('game-transition', 'fade', {
           score : scorer.getScore()
         });
       }
@@ -141,13 +179,16 @@ Game.addScene('soap', function (scene, data) {
         id : 'germ-' + now,
         elementClass : 'germ',
         scene : scene,
-        traits : ['collider']
+        traits : ['collider', 'lifespan', 'animated-sprite']
       });
+
+      germ.life = 30;
+      germ.lifespan = 2000;
 
       germ
         .setPosition({
-          x : Math.random() * 748 - 100,
-          y : Math.random() * 1004 - 200
+          x : Math.random() * 748 - 200,
+          y : Math.random() * 1004 - 100
         })
         .listen('collision', function (entity) {
           if (entity.id === 'user-controlled-soap-bar') {
@@ -157,11 +198,15 @@ Game.addScene('soap', function (scene, data) {
               germ.die();
             }
           }
-        });
-      
-      germ.life = 30;
-
-    }, 2000);
+        })
+        .animateSprite({
+          frames : 60,
+          height: 101,
+          fps: 30
+        })
+        .startLife();
+    
+    }, 800);
     
   };
 
@@ -176,6 +221,10 @@ Game.addScene('soap', function (scene, data) {
 }, function (scene) {
   clearInterval(scene.enemyInterval);
 });
+
+/*
+ * Create the tornado game screen
+ */
 
 Game.addScene('tornado', function (scene) {
 

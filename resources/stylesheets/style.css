@@ -107,6 +107,17 @@ button {
 	text-align: center;
 }
 
+/* Between-games scene */
+
+.game-transition {
+	background-image: url('/resources/images/start-screen.jpg');	
+}
+
+.game-transition .score {
+	margin: 700px auto 0 auto;
+	text-align: center;
+}
+
 /* Soap scene */
 
 .soap {
@@ -129,9 +140,10 @@ button {
 
 .soap .germ {
 	position: absolute;
-	height: 200px;
-	width: 100px;
-	background-color: rgba(83, 205, 29, 0.7);
+	height: 100px;
+	width: 200px;
+	/*background-color: rgba(83, 205, 29, 0.7);*/
+	background: transparent url("/resources/images/germ-sprite.png") no-repeat 0 0;
 	z-index: 50;
 	-webkit-border-radius: 5px;
 }
