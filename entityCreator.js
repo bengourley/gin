@@ -4,8 +4,6 @@
 
 	entityCreator.createScorer = function(properties) {
 		
-		console.log("helloo");
-
 		var scorer = Game.entity({
 			id : properties.id,
 			scene: properties.scene,
@@ -22,19 +20,32 @@
 		scorer.text(score);
 
 		var ui = {};
+		
+		ui.updateScore = function(add) {
+			score += add;
+			return ui;		
+		};
 
-		ui.update = function (add) {
-			console.log("Score: " + score);
-    		score += add;
-      		scorer.text(score);
-      		return ui;
-    	};
+		ui.updateDisplay = function(textModifier) {
+			if (textModifier !== undefined) {
+				scorer.text(textModifier(score));
+			}
+			else {
+				scorer.text(score);
+			}
+			return ui;
+		}
 
-    	ui.getScore = function (add) {
-      		return score;
-    	};
-
-    	return ui;
+		ui.update = function (add, textModifier) {
+			ui.updateScore(add);
+			return ui.updateDisplay(textModifier);
+		};
+		
+		ui.getScore = function (add) {
+			return score;
+		};
+		
+		return ui;
 	};
 
 	entityCreator.createTimer = function(properties, callback) {
