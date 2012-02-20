@@ -34,12 +34,6 @@
    * Initialise the game.
    */
   game.init = function (options) {
-    
-    if (options.preload) {
-      $(options.preload).each(function () {
-        $('<img/>')[0].src = this;
-      });
-    }
 
     stage = $('<div/>')
               .attr('id', 'stage')
@@ -58,6 +52,7 @@
     game.emit('ready');
 
     return game;
+
   };
 
   /*
@@ -149,6 +144,7 @@
     });
     listeners = newListeners;
     return game;
+
   };
 
   /*
@@ -426,7 +422,38 @@
     game.listen('orientationnotsupported', function() {
       alert('return to ' + orientationSetting + ' mode');
     });
+
+  };
     
+  game.assetLoader = function (assets, progress, callback) {
+
+    var loader = {};
+
+    var onProgress;
+
+    var loaded = 0,
+        total = assets.length;
+
+    assets.forEach(function (asset) {
+      
+      var img = new Image();
+      
+      $(img).bind('load', function () {
+        loaded += 1;
+        progress(loaded / total);
+        if (loaded === assets.length) callback();
+      });
+
+      $(img).bind('error', function () {
+        throw new Error('Failed to load asset `' + asset + '`');
+      });
+
+      img.src = asset;
+
+    });
+
+    return game;
+
   };
 
   // Expose the game object globally
