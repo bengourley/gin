@@ -1,0 +1,428 @@
+/*
+ * Reset
+ */
+
+* {
+	margin: 0;
+	padding: 0;
+	-webkit-font-smoothing: antialiased;
+}
+
+/*
+ * Generic styling
+ */
+
+body {
+	font-family: 'Arial', sans-serif;
+	font-size: 20px;
+	line-height: 1.5em;
+}
+
+button {
+	font-family: 'Arial', sans-serif;
+	font-size: 20px;
+	border: 1px solid rgba(34, 66, 143, 0.6);
+	background-color: rgba(255, 255, 255, 0.9);
+	text-shadow: 0px 1px 0px rgba(245, 245, 245, 1);
+	padding: 10px 45px;
+	border-radius: 3px;
+	margin: 10px;
+	-webkit-box-shadow: 0px 0px 0px 5px rgba(200, 200, 200, 0.3),
+		inset 0px 0px 10px rgba(255, 255, 255, 0.5);
+	cursor: pointer;
+	color: #22428f;
+	font-weight: bold;
+}
+
+button.large {
+	font-size: 40px;
+}
+
+.popover {
+	z-index: 100;
+	position: absolute;
+	color: #fff;
+	padding: 20px;
+	top: 20px;
+	right: 20px;
+	left: 20px;
+	background-color: rgba(10, 10, 10, 0.5);
+	border: 1px solid rgba(0, 0, 0, 0.3);
+	-webkit-border-radius: 5px;
+	font-size: 20px;
+	text-shadow: 0px -1px 0px rgba(0,0,0,0.3);
+	-webkit-box-shadow: 0px 2px 0px rgba(0,0,0,0.3), inset 0px 1px 0px rgba(255,255,255,0.1);
+}
+
+.popover-light {
+	background-color: transparent;
+	border: none;
+	text-shadow: 0px 4px 2px rgba(104, 39 , 9, 0.9), 0px -1px 0px rgba(104, 39 , 9, 0.9), -1px 0px 0px rgba(104, 39 , 9, 0.9), 1px 0px 0px rgba(104, 39 , 9, 0.9);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	font-weight: 700;
+}
+
+.popover-bottom {
+	top: auto;
+	bottom: 20px;	
+}
+
+.popover .centered {
+	float: none;
+	margin: 0;
+	text-align: center;
+}
+
+.popover p {
+	float: left;
+	margin: 15px 0px 0px 0px;
+}
+
+.popover button {
+	float: right;
+}
+
+.popover .controls {
+	clear: both;
+	text-align: center;
+	padding: 15px 0px;
+}
+
+.popover .controls button {
+	float: none;
+	display: inline-block;
+}
+
+.action-layer {
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+}
+
+#score,
+#game-timer {
+	font-weight: bold;
+	font-size: 30px;
+	background-color: rgba(34, 66, 143, 0.8);
+	-webkit-border-radius: 5px;
+	position: absolute;
+	padding: 10px;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	width: 200px;
+	text-align: center;
+	z-index: 120;
+	color: #fff;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.7);
+}
+
+/*
+ * Stage element
+ */
+
+#stage {
+	top: 0;
+	left: 0;
+	position: absolute;
+	overflow: hidden;
+}
+
+/*
+ * Generic Scene elements
+ */
+
+.scene {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+}
+
+/*
+ * Individual scene elements
+ */
+
+
+/* Start scene */
+
+.start {
+	background-image: url('/resources/images/start-screen.jpg');
+}
+
+.start label {
+	display: block;
+	margin: 800px auto 0 auto;
+	text-align: center;
+}
+
+/* Between-games scene */
+
+.game-transition {
+	background-image: url('/resources/images/smooth-skin.jpg');	
+}
+
+.game-transition .popover {
+	font-size: 50px;
+	line-height: 55px;
+}
+
+.game-transition .popover p {
+	margin-bottom: 30px;
+}
+
+.game-transition .popover p span {
+	color: #22428f;
+	text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.game-transition .popover p.big-margin {
+	margin-top: 200px;
+}
+
+/* Finish scene */
+
+.finish {
+	background-image: url('/resources/images/smooth-skin.jpg');
+}
+
+.finish .popover {
+	font-size: 50px;
+	line-height: 55px;
+}
+
+.finish .popover p {
+	margin-bottom: 30px;
+}
+
+.finish .popover p.small {
+	font-size: 40px;
+	line-height: 45px;
+}
+
+.finish .popover p span {
+	color: #22428f;
+	text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Mother and child scene */
+
+.mother {
+	background-image: url('/resources/images/mother.jpg');
+}
+
+/* Soap scene */
+
+.soap {
+	background-color: #9c5a39;
+	background-image: url('/resources/images/cracked-skin.jpg');
+}
+
+.soap .popover {
+	font-size: 70px;
+	line-height: 75px;
+}
+
+#user-controlled-soap-bar {
+	background-image: url('/resources/images/soap.png');
+	width: 180px;
+	height: 125px;
+	position: absolute;
+	z-index: 100;
+}
+
+.soap .germ {
+	position: absolute;
+	height: 100px;
+	width: 200px;
+	/*background-color: rgba(83, 205, 29, 0.7);*/
+	background: transparent url("/resources/images/germ-sprite.png") no-repeat 0 0;
+	z-index: 50;
+	-webkit-border-radius: 5px;
+}
+
+/* Tornado scene */
+
+.tornado {
+	background-image: url('/resources/images/cracked-skin.jpg');
+}
+
+.tornado .popover {
+	font-size: 50px;
+	line-height: 55px;
+}
+
+#user-controlled-tornado {
+	height: 50px;
+	width: 50px;
+	background-color: #eee;
+	position: absolute;
+	z-index: 100;
+	-webkit-border-radius: 100px;
+}
+
+#user-controlled-tornado .tornado-graphic {
+	border-top: 500px solid #999;
+	border-left: 100px solid transparent;
+	border-right: 100px solid transparent;
+	border-bottom: 5px solid transparent;
+	position: absolute;
+	bottom: 100%;
+	left: -75px;
+}
+
+.tornado .droplet {
+	height: 40px;
+	width: 40px;
+	background-color: #dda;
+	opacity: 0.8;
+	border-radius: 25px;
+}
+
+.tornado .less-cracked-skin {
+	background-image: url('/resources/images/less-cracked-skin.jpg');
+}
+
+.tornado .smooth-skin {
+	background-image: url('/resources/images/smooth-skin.jpg');
+}
+
+#crack-1 {
+	background-image: url('/resources/images/less-cracked-skin.jpg');
+	background-position: -432px -605px;
+	height: 308px;
+	width: 336px;
+}
+
+#crack-2 {
+	background-image: url('/resources/images/less-cracked-skin.jpg');
+	background-position: 0px -482px;
+	height: 488px;
+	width: 384px;
+}
+
+#crack-3 {
+	background-image: url('/resources/images/less-cracked-skin.jpg');
+	background-position: -92px -101px;
+	height: 281px;
+	width: 292px;
+}
+
+#crack-4 {
+	background-image: url('/resources/images/less-cracked-skin.jpg');
+	background-position: -540px -101px;
+	height: 166px;
+	width: 155px;
+}
+
+.tornado .smooth-tile {
+	height: 326px;
+	width: 272px;
+	background-repeat: no-repeat;
+}
+
+#smooth-0-0 {
+	background-image: url('/resources/images/tiles/00.png');
+	background-position: 40px 40px;
+}
+
+#smooth-1-0 {
+	background-image: url('/resources/images/tiles/10.png');
+	background-position: 0px 40px;
+}
+
+#smooth-2-0 {
+	background-image: url('/resources/images/tiles/20.png');
+	background-position: 0px 40px;
+}
+
+#smooth-3-0 {
+	background-image: url('/resources/images/tiles/30.png');
+	background-position: 0px 40px;
+}
+
+#smooth-0-1 {
+	background-image: url('/resources/images/tiles/01.png');
+	background-position: 40px 0px;
+}
+
+#smooth-1-1 {
+	background-image: url('/resources/images/tiles/11.png');
+	background-position: 0px 0px;
+}
+
+#smooth-2-1 {
+	background-image: url('/resources/images/tiles/21.png');
+	background-position: 0px 0px;
+}
+
+#smooth-3-1 {
+	background-image: url('/resources/images/tiles/31.png');
+	background-position: 0px 0px;
+}
+
+#smooth-0-2 {
+	background-image: url('/resources/images/tiles/02.png');
+	background-position: 40px -10px;
+}
+
+#smooth-1-2 {
+	background-image: url('/resources/images/tiles/12.png');
+	background-position: 0px -10px;
+}
+
+#smooth-2-2 {
+	background-image: url('/resources/images/tiles/22.png');
+	background-position: 0px -10px;
+}
+
+#smooth-3-2 {
+	background-image: url('/resources/images/tiles/32.png');
+	background-position: 0px -10px;
+}
+
+#smooth-0-3 {
+	background-image: url('/resources/images/tiles/03.png');
+	background-position: 40px -20px;
+}
+
+#smooth-1-3 {
+	background-image: url('/resources/images/tiles/13.png');
+	background-position: 0px -20px;
+}
+
+#smooth-2-3 {
+	background-image: url('/resources/images/tiles/23.png');
+	background-position: 0px -20px;
+}
+
+#smooth-3-3 {
+	background-image: url('/resources/images/tiles/33.png');
+	background-position: 0px -20px;
+}
+
+/* Finish scene */
+.finish {
+	background-color: #eee;
+}
+
+.finish p {
+	text-align: center;
+	margin: 40px 0px 40px 0px;
+}
+
+
+
+.grab {
+	height: 1628px;
+	width: 826px;
+	background-image: url('/resources/images/grab.png');
+	position: absolute;
+	top: 0px;
+	left: 0px;
+	-webkit-transition: all ease-in-out 4s;
+}
