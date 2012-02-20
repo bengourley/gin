@@ -290,9 +290,9 @@ Game.registerEntityTrait('lifespan', function (entity, element, context) {
   
   entity.lifespan = 0;
 
-  entity.startLife = function(callback) {
+  entity.startLife = function (callback) {
     if (entity.lifespan > 0) {
-      setTimeout(function() {
+      setTimeout(function () {
         entity.die();
         if (callback !== undefined) {
           callback();
@@ -313,7 +313,7 @@ Game.registerEntityTrait('lifespan', function (entity, element, context) {
 Game.registerEntityTrait('animated-sprite', function (entity, element, context) {
   
   // Run a single frame
-  entity.animateSprite = function(animationData) {
+  entity.animateSprite = function (animationData) {
       
       // Set initial sprite position
       if (animationData.currentPos === undefined) {
@@ -332,7 +332,7 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
       
       // If there are still frames left, recurse
       if (animationData.frames > 0) {
-        setTimeout(function() {
+        setTimeout(function () {
           entity.animateSprite(animationData);
         },
         1000 / animationData.fps);
@@ -342,7 +342,7 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
         animationData.currentPos = 0;
         animationData.frames = animationData.initialFrames;
         
-        setTimeout(function() {
+        setTimeout(function () {
           entity.animateSprite(animationData);
         },
         1000 / animationData.fps);
