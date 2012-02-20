@@ -424,8 +424,23 @@
     });
 
   };
-    
+  
+  /*
+   * Load some assets. `progress` is a callback to fire
+   * after each asset has loaded. Recieves one value between
+   * indicating progress (total assets/assets loaded). `callback`
+   * is a function to execute when all assets have been loaded.
+   *
+   * If a load error occurs (i.e. an asset 404s) this function
+   * throws.
+   */
   game.assetLoader = function (assets, progress, callback) {
+
+    if (!Array.isArray(assets))
+      throw new Error('Asset loader requires an array of assets');
+
+    if (assets.length === 0)
+      callback();
 
     var loader = {};
 
