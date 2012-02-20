@@ -7,26 +7,12 @@ Game.addScene('start', function (scene, data) {
   scene.context.append(
     $('<label/>').append(
       $('<button/>')
-        .text('Play & win')
+        .addClass('large')
+        .text('Cleanse and Nourish to Win')
         .bind('click', function () {
           Game.runScene('soap', 'slideUp');
         })
     )
-  );
-});
-
-/*
- * Create the finish screen
- */
-
-Game.addScene('finish', function (scene, data) {
-  scene.context.addClass('finish');
-  scene.context.append(
-    $('<p/>')
-      .text('Finished! You scored ' + data.score + '. Again?')
-      .click(function () {
-        Game.runScene('soap', 'slideRight');
-      })
   );
 });
 
@@ -36,37 +22,103 @@ Game.addScene('finish', function (scene, data) {
 
  Game.addScene('game-transition', function (scene, data) {
   scene.context.addClass('game-transition');
-  
-  // Show score for previous game
   scene.context.append(
-    $('<p/>')
-      .html('Well done! You scored <strong>' + data.score + '</strong>.')
-      .addClass('score')
-    );
-  
-  // Show a button to play the previous game again
-  scene.context.append(
-    $('<label/>').append(
-      $('<button/>')
-        .text('Play again')
-        .bind('click', function() {
-          Game.runScene('soap', 'slideRight');
-        })
-    )
+    $('<div/>')
+      .addClass('popover popover-light')
+      .append(
+        $('<p/>')
+          .addClass('centered')
+          .text('Well done!')
+      )
+      .append(
+        $('<p/>')
+          .addClass('centered')
+          .html('You scored: <span>' + data.score + '</span>')
+      )
+      .append(
+        $('<p/>')
+          .addClass('centered')
+          .text('Your skin is cleansed, now it\'s time to nourish it too!')
+      )
+      .append(
+        $('<p/>')
+          .addClass('centered big-margin')
+          .text('Use the fresh, cleansing effect of Vaseline 2-in-1 to')
+      )
+  )
+  .append(
+    $('<div/>')
+      .addClass('popover popover-light popover-bottom')
+      .append(
+        $('<div/>')
+          .addClass('controls')
+          .append(
+            $('<button/>')
+              .addClass('large')
+              .text('Nourish your skin')
+              .bind('click', function() {
+                Game.runScene('tornado', 'slideLeft');
+              })
+          )
+      )
   );
-
-  // Show a button to go to the tornado scene
-  scene.context.append(
-    $('<label/>').append(
-      $('<button/>')
-        .text('Play the next game')
-        .bind('click', function() {
-          Game.runScene('tornado', 'slideLeft');
-        })
-    )
-  );
-
  });
+
+/*
+ * Create the finish screen
+ */
+
+Game.addScene('finish', function (scene, data) {
+  scene.context.addClass('finish');
+  scene.context.append(
+    $('<div/>')
+      .addClass('popover popover-light')
+      .append(
+        $('<p/>')
+          .addClass('centered')
+          .html('Your final score: <span>' + Math.round(data.score) + '%</span>')
+      )
+      .append(
+        $('<p/>')
+          .addClass('centered')
+          .text('Well done! You’ve qualified to enter our free competition to win an iPad3')
+      )
+      .append(
+        $('<p/>')
+          .addClass('centered small')
+          .text('Name: --------------')
+      )
+      .append(
+        $('<p/>')
+          .addClass('centered small')
+          .text('Cell number: --------------')
+      )
+      .append(
+        $('<p/>')
+          .addClass('centered small')
+          .text('Email address: --------------')
+      )
+      .append(
+        $('<div/>')
+          .addClass('controls')
+          .append(
+            $('<button/>')
+              .addClass('large')
+              .text('Vaseline 2-in-1')
+              .bind('click', function() {
+                Game.runScene('mother', 'fade')
+              })
+          )
+      )
+  );
+});
+
+/*
+ * Create the mother and child screen
+ */
+Game.addScene('mother', function (scene) {
+  scene.context.addClass('mother');
+});
 
 /*
  * Create the soap game screen
@@ -89,18 +141,24 @@ Game.addScene('soap', function (scene) {
   // Append the popover
   scene.context.append(
     $('<div/>')
-      .addClass('popover')
+      .addClass('popover popover-light')
       .append(
         $('<p/>')
-          .text('Use the soap bar to kill the germs')
+          .addClass('centered')
+          .text('Use the Vaseline 2-in-1 soap to cleanse the germs')
       )
       .append(
+        $('<div/>')
+        .addClass('controls')
+        .append(
         $('<button/>')
+          .addClass('large')
           .text('Start')
           .bind('click', function () {
-            $(this).parent().remove();
+            $(this).parent().parent().remove();
             scene.emit('begin');
           })
+        )
       )
   );
 
@@ -154,16 +212,18 @@ Game.addScene('soap', function (scene) {
       id : 'score',
       scene: scene,
       x : 10,
-      y : 10  
+      y : 10,
+      before : 'score: '
     });
 
     // Setup time limit
     Game.entityCreator.createTimer({
       id : 'game-timer',
       scene : scene,
-      x : 730,
+      x : 570,
       y : 10,
-      seconds : 1
+      seconds : 20,
+      before : 'time: '
     },
       function () {
         Game.runScene('game-transition', 'fade', {
@@ -201,18 +261,24 @@ Game.addScene('tornado', function (scene) {
   // Append the popover
   scene.context.append(
     $('<div/>')
-      .addClass('popover')
+      .addClass('popover popover-light')
       .append(
         $('<p/>')
-          .text('Now use the tornado to moisturise the skin')
+          .addClass('centered')
+          .text('Use the fresh, cleansing effect of Vaseline 2-in-1 to')
       )
       .append(
-        $('<button/>')
-          .text('Start')
-          .bind('click', function () {
-            $(this).parent().remove();
-            scene.emit('begin');
-          })
+        $('<div/>')
+          .addClass('controls')
+          .append(
+            $('<button/>')
+              .addClass('large')
+              .text('Nourish your Skin')
+              .bind('click', function () {
+                $(this).parent().parent().remove();
+                scene.emit('begin');
+            })
+        )
       )
   );
 
@@ -257,11 +323,7 @@ Game.addScene('tornado', function (scene) {
                 }
 
                 if (!(scorer.getScore() % 1)) {
-                  scorer.updateDisplay(
-                    function(score) {
-                      return score + '%';            
-                    }
-                  );
+                  scorer.updateDisplay();
                 }
               }
             }
@@ -358,16 +420,19 @@ Game.addScene('tornado', function (scene) {
       id : 'score',
       scene : scene,
       x : 10,
-      y : 10
+      y : 10,
+      before : 'score: ',
+      after : '%'
     });
 
     // Setup time limit
     Game.entityCreator.createTimer({
       id : 'game-timer',
       scene : scene,
-      x : 730,
+      x : 570,
       y : 10,
-      seconds : 30
+      seconds : 30,
+      before : 'time: '
     },
       function () {
         Game.runScene('finish', 'fade', {
@@ -383,21 +448,27 @@ Game.addScene('tornado', function (scene) {
 
 });
 
-/*
- * Show the start screen when ready
- */
-Game.listen('ready', function () {
-
-  Game.runScene('start');
-
-});
-
 // Run init method
 window.addEventListener('load', function () {
   Game.init({
     height : 1004,
-    width : 768
+    width : 768,
+    preload : [
+      '/resources/images/germ-sprite.png',
+      '/resources/images/cracked-skin.jpg',
+      '/resources/images/less-cracked-skin.jpg',
+      '/resources/images/smooth-skin.jpg',
+      '/resources/images/mother.jpg',
+      '/resources/images/soap.png'
+    ]
   });
+});
+
+/*
+ * Show the start screen when ready
+ */
+Game.listen('ready', function () {
+  Game.runScene('start');
 });
 
 /*

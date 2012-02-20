@@ -21,8 +21,8 @@ body {
 button {
 	font-family: 'Arial', sans-serif;
 	font-size: 20px;
-	border: 1px solid rgba(255, 255, 255, 0.8);
-	background-color: rgba(245, 245, 245, 0.8);
+	border: 1px solid rgba(34, 66, 143, 0.6);
+	background-color: rgba(255, 255, 255, 0.9);
 	text-shadow: 0px 1px 0px rgba(245, 245, 245, 1);
 	padding: 10px 45px;
 	border-radius: 3px;
@@ -32,6 +32,10 @@ button {
 	cursor: pointer;
 	color: #22428f;
 	font-weight: bold;
+}
+
+button.large {
+	font-size: 40px;
 }
 
 .popover {
@@ -50,6 +54,26 @@ button {
 	-webkit-box-shadow: 0px 2px 0px rgba(0,0,0,0.3), inset 0px 1px 0px rgba(255,255,255,0.1);
 }
 
+.popover-light {
+	background-color: transparent;
+	border: none;
+	text-shadow: 0px 4px 2px rgba(104, 39 , 9, 0.9), 0px -1px 0px rgba(104, 39 , 9, 0.9), -1px 0px 0px rgba(104, 39 , 9, 0.9), 1px 0px 0px rgba(104, 39 , 9, 0.9);
+	-webkit-box-shadow: none;
+	box-shadow: none;
+	font-weight: 700;
+}
+
+.popover-bottom {
+	top: auto;
+	bottom: 20px;	
+}
+
+.popover .centered {
+	float: none;
+	margin: 0;
+	text-align: center;
+}
+
 .popover p {
 	float: left;
 	margin: 15px 0px 0px 0px;
@@ -57,6 +81,17 @@ button {
 
 .popover button {
 	float: right;
+}
+
+.popover .controls {
+	clear: both;
+	text-align: center;
+	padding: 15px 0px;
+}
+
+.popover .controls button {
+	float: none;
+	display: inline-block;
 }
 
 .action-layer {
@@ -71,14 +106,18 @@ button {
 #game-timer {
 	font-weight: bold;
 	font-size: 30px;
-	background-color: rgba(255, 255, 255, 0.5);
+	background-color: rgba(34, 66, 143, 0.8);
 	-webkit-border-radius: 5px;
 	position: absolute;
 	padding: 10px;
-	border: 1px solid #fff;
-	width: 40px;
+	border: 1px solid rgba(255, 255, 255, 0.5);
+	width: 200px;
 	text-align: center;
 	z-index: 120;
+	color: #fff;
+	font-weight: bold;
+	text-transform: uppercase;
+	text-shadow: 0px 1px 1px rgba(0, 0, 0, 0.7);
 }
 
 /*
@@ -124,12 +163,56 @@ button {
 /* Between-games scene */
 
 .game-transition {
-	background-image: url('/resources/images/start-screen.jpg');	
+	background-image: url('/resources/images/smooth-skin.jpg');	
 }
 
-.game-transition .score {
-	margin: 700px auto 0 auto;
-	text-align: center;
+.game-transition .popover {
+	font-size: 50px;
+	line-height: 55px;
+}
+
+.game-transition .popover p {
+	margin-bottom: 30px;
+}
+
+.game-transition .popover p span {
+	color: #22428f;
+	text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+.game-transition .popover p.big-margin {
+	margin-top: 200px;
+}
+
+/* Finish scene */
+
+.finish {
+	background-image: url('/resources/images/smooth-skin.jpg');
+}
+
+.finish .popover {
+	font-size: 50px;
+	line-height: 55px;
+}
+
+.finish .popover p {
+	margin-bottom: 30px;
+}
+
+.finish .popover p.small {
+	font-size: 40px;
+	line-height: 45px;
+}
+
+.finish .popover p span {
+	color: #22428f;
+	text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Mother and child scene */
+
+.mother {
+	background-image: url('/resources/images/mother.jpg');
 }
 
 /* Soap scene */
@@ -137,6 +220,11 @@ button {
 .soap {
 	background-color: #9c5a39;
 	background-image: url('/resources/images/cracked-skin.jpg');
+}
+
+.soap .popover {
+	font-size: 70px;
+	line-height: 75px;
 }
 
 #user-controlled-soap-bar {
@@ -158,8 +246,14 @@ button {
 }
 
 /* Tornado scene */
+
 .tornado {
 	background-image: url('/resources/images/cracked-skin.jpg');
+}
+
+.tornado .popover {
+	font-size: 50px;
+	line-height: 55px;
 }
 
 #user-controlled-tornado {
