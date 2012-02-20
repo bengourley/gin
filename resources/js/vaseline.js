@@ -453,6 +453,7 @@ window.addEventListener('load', function () {
   Game.init({
     height : 1004,
     width : 768,
+    options : 'portrait',
     preload : [
       '/resources/images/germ-sprite.png',
       '/resources/images/cracked-skin.jpg',
@@ -470,22 +471,3 @@ window.addEventListener('load', function () {
 Game.listen('ready', function () {
   Game.runScene('start');
 });
-
-/*
- * Deal with rotation
- */
-$(window).bind('orientationchange', function () {
-  switch(window.orientation) {
-  case 0:
-    break;
-  case 90:
-    alert('return to portrait mode');
-    break;
-  case -90:
-      alert('return to portrait mode');
-    break;
-  case 180:
-    break;
-  }
-});
-
