@@ -61,7 +61,7 @@
    * Expose canvas width.
    */
   game.width = function() {
-    return stage.width();  
+    return stage.width();
   };
 
   /*
