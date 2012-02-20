@@ -34,12 +34,6 @@
    * Initialise the game.
    */
   game.init = function (options) {
-    
-    if (options.preload) {
-      $(options.preload).each(function () {
-        $('<img/>')[0].src = this;
-      });
-    }
 
     stage = $('<div/>')
               .attr('id', 'stage')
@@ -58,6 +52,7 @@
     game.emit('ready');
 
     return game;
+
   };
 
   /*
@@ -136,27 +131,20 @@
 
     var newListeners = [];
     listeners.forEach(function (listener) {
-      if (obj !== listener.obj) {
-        newListeners.push(listener);
+      if (typeof obj === 'string') {
+        if (obj !== listener.event) {
+          newListeners.push(listener);
+        }
+      }
+      else {
+        if (obj !== listener.obj) {
+          newListeners.push(listener);
+        }
       }
     });
     listeners = newListeners;
     return game;
-  };
 
-  /*
-   * Remove all events from the event stack that are of the given type.
-   */
-  game.unlistenEventType = function (event) {
-    
-    var newListeners = [];
-    listeners.forEach(function (listener) {
-      if (event !== listener.event) {
-        newListeners.push(listener);
-      }
-    });
-    listeners = newListeners;
-    return game;
   };
 
   /*
@@ -399,8 +387,7 @@
    * game events depending on the orientationSetting parameter. This can either be `landscape` or `portrait`.
    *
    * Provides some default behaviour in the form of alert boxes when the orientation is changed to an angle
-   * which is unsupported. This can be removed by calling game.unlistenEventType on either `protraitnotsupported` or
-   * `landscapenotsupported`.
+   * which is unsupported. This can be removed by calling game.unlistenEventType on either `orientationnotsupported`.
    */
   util.handleOrientation = function (orientationSetting) {
     
@@ -408,27 +395,64 @@
     $(window).bind('orientationchange', function () {
       if (orientationSetting === 'landscape' &&
             (window.orientation === 0 || window.orientation === 180)) {
-        game.emit('orientationchange');
-        game.emit('portaitnotsupported');
+        game.emit('orientationchange', {
+          orientation : window.orientation
+        });
+        game.emit('orientationnotsupported', {
+          orientation : window.orientation
+        });
       }
       else if (orientationSetting === 'portrait' &&
             (window.orientation === 90 || window.orientation === -90)) {
-        game.emit('orientationchange');
-        game.emit('landscapenotsupported');
+        game.emit('orientationchange', {
+          orientation : window.orientation
+        });
+        game.emit('orientationnotsupported', {
+          orientation : window.orientation
+        });
       }
       else {
-        game.emit('orientationchange');
+        game.emit('orientationchange', {
+          orientation : window.orientation
+        });
       }
     });
 
     // Setup default behaviour for orientation not supported events
-    game.listen('portaitnotsupported', function() {
-      alert('return to landscape mode');
+    game.listen('orientationnotsupported', function() {
+      alert('return to ' + orientationSetting + ' mode');
     });
+
+  };
     
-    game.listen('landscapenotsupported', function() {
-      alert('return to portrait mode');
+  game.assetLoader = function (assets, progress, callback) {
+
+    var loader = {};
+
+    var onProgress;
+
+    var loaded = 0,
+        total = assets.length;
+
+    assets.forEach(function (asset) {
+      
+      var img = new Image();
+      
+      $(img).bind('load', function () {
+        loaded += 1;
+        progress(loaded / total);
+        if (loaded === assets.length) callback();
+      });
+
+      $(img).bind('error', function () {
+        throw new Error('Failed to load asset `' + asset + '`');
+      });
+
+      img.src = asset;
+
     });
+
+    return game;
 
   };
 
