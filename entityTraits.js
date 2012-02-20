@@ -312,6 +312,14 @@ Game.registerEntityTrait('lifespan', function (entity, element, context) {
 
 Game.registerEntityTrait('animated-sprite', function (entity, element, context) {
   
+  // Run a single frame
+  doAnimation = function (animationData) {
+    setTimeout(function() {
+      entity.animateSprite(animationData);
+    },
+    1000 / animationData.fps);
+  };
+
   entity.animateSprite = function(animationData) {
       
       // Set initial sprite position
@@ -331,14 +339,14 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
       
       // If there are still frames left, recurse
       if (animationData.frames > 0) {
-        setTimeout(function() {
-          entity.animateSprite(animationData);
-        },
-        1000 / animationData.fps);
+        doAnimation(animationData);
       }
       else if (animationData.repeat) {
+        // Reset animation
         animationData.currentPos = 0;
         animationData.frames = animationData.initialFrames;
+        
+        doAnimation(animationData);
       }
 
       return entity;
