@@ -17,7 +17,15 @@
 
 		var score = 0;
 
-		scorer.text(score);
+		if (properties.before === undefined) {
+			properties.before = '';
+		}
+
+		if (properties.after === undefined) {
+			properties.after = '';
+		}
+
+		scorer.text(properties.before + score + properties.after);
 
 		var ui = {};
 		
@@ -26,19 +34,14 @@
 			return ui;		
 		};
 
-		ui.updateDisplay = function(textModifier) {
-			if (textModifier !== undefined) {
-				scorer.text(textModifier(score));
-			}
-			else {
-				scorer.text(score);
-			}
+		ui.updateDisplay = function() {
+			scorer.text(properties.before + score + properties.after);
 			return ui;
 		}
 
-		ui.update = function (add, textModifier) {
+		ui.update = function (add) {
 			ui.updateScore(add);
-			return ui.updateDisplay(textModifier);
+			return ui.updateDisplay();
 		};
 		
 		ui.getScore = function (add) {
@@ -63,11 +66,19 @@
 
 	    var seconds = properties.seconds;
 
-	    timer.text(seconds);
+	    if (properties.before === undefined) {
+			properties.before = '';
+		}
+
+		if (properties.after === undefined) {
+			properties.after = '';
+		}
+
+		timer.text(properties.before + seconds + properties.after);
 
 	    var timerInterval = setInterval(function () {
 	    	seconds--;
-	    	timer.text(seconds);
+	    	timer.text(properties.before + seconds + properties.after);
 	    	if (seconds <= 0) {
 	    		clearInterval(timerInterval);
 	    		if (callback !== undefined) {

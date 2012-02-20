@@ -5,6 +5,7 @@
  * a public interface at window#Game.
  *
  * Author: Ben Gourley - 2012
+ *
  * Collaborators:
  *  - Ben Constable (GitHub: BenConstable)
  */
@@ -33,10 +34,18 @@
    * Initialise the game.
    */
   game.init = function (options) {
+    
+    if (options.preload) {
+      $(options.preload).each(function () {
+        $('<img/>')[0].src = this;
+      });
+    }
+
     stage = $('<div/>')
               .attr('id', 'stage')
               .height(options.height)
               .width(options.width);
+
     $('body')
       .append(stage)
       .bind('touchmove', function (e) {
@@ -44,8 +53,8 @@
       });
 
     game.emit('ready');
-    return game;
 
+    return game;
   };
 
   /*
