@@ -51,6 +51,9 @@
       .bind('touchmove', function (e) {
         e.preventDefault();
       });
+    
+    // Deal with orientation
+    util.handleOrientation(options.orientation);
 
     game.emit('ready');
 
@@ -126,13 +129,29 @@
   };
 
   /*
-   * Binds a callback to a game event
+   * Remove all events from the event stack that are bound
+   * to the given object.
    */
   game.unlisten = function (obj) {
 
     var newListeners = [];
     listeners.forEach(function (listener) {
       if (obj !== listener.obj) {
+        newListeners.push(listener);
+      }
+    });
+    listeners = newListeners;
+    return game;
+  };
+
+  /*
+   * Remove all events from the event stack that are of the given type.
+   */
+  game.unlistenEventType = function (event) {
+    
+    var newListeners = [];
+    listeners.forEach(function (listener) {
+      if (event !== listener.event) {
         newListeners.push(listener);
       }
     });
@@ -372,6 +391,44 @@
       return scene;
 
     };
+
+  };
+
+  /*
+   * Handle orientation changes. Binds a function to the `window.orientationchange`, which generates
+   * game events depending on the orientationSetting parameter. This can either be `landscape` or `portrait`.
+   *
+   * Provides some default behaviour in the form of alert boxes when the orientation is changed to an angle
+   * which is unsupported. This can be removed by calling game.unlistenEventType on either `protraitnotsupported` or
+   * `landscapenotsupported`.
+   */
+  util.handleOrientation = function (orientationSetting) {
+    
+    // Emit correct game events when orientation changes
+    $(window).bind('orientationchange', function () {
+      if (orientationSetting === 'landscape' &&
+            (window.orientation === 0 || window.orientation === 180)) {
+        game.emit('orientationchange');
+        game.emit('portaitnotsupported');
+      }
+      else if (orientationSetting === 'portrait' &&
+            (window.orientation === 90 || window.orientation === -90)) {
+        game.emit('orientationchange');
+        game.emit('landscapenotsupported');
+      }
+      else {
+        game.emit('orientationchange');
+      }
+    });
+
+    // Setup default behaviour for orientation not supported events
+    game.listen('portaitnotsupported', function() {
+      alert('return to landscape mode');
+    });
+    
+    game.listen('landscapenotsupported', function() {
+      alert('return to portrait mode');
+    });
 
   };
 
