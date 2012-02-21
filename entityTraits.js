@@ -293,9 +293,11 @@ Game.registerEntityTrait('lifespan', function (entity, element, context) {
   entity.startLife = function (callback) {
     if (entity.lifespan > 0) {
       setTimeout(function () {
-        entity.die();
         if (callback !== undefined) {
           callback();
+        }
+        else {
+          entity.die();
         }
       },
       entity.lifespan);

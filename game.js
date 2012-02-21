@@ -387,35 +387,30 @@
    * game events depending on the orientationSetting parameter. This can either be `landscape` or `portrait`.
    *
    * Provides some default behaviour in the form of alert boxes when the orientation is changed to an angle
-   * which is unsupported. This can be removed by calling game.unlistenEventType on either `orientationnotsupported`.
+   * which is unsupported. This can be removed by calling game.unlistenEventType on orientationnotsupported`.
    */
   util.handleOrientation = function (orientationSetting) {
     
     // Emit correct game events when orientation changes
     $(window).bind('orientationchange', function () {
+
       if (orientationSetting === 'landscape' &&
             (window.orientation === 0 || window.orientation === 180)) {
-        game.emit('orientationchange', {
-          orientation : window.orientation
-        });
         game.emit('orientationnotsupported', {
           orientation : window.orientation
         });
       }
       else if (orientationSetting === 'portrait' &&
             (window.orientation === 90 || window.orientation === -90)) {
-        game.emit('orientationchange', {
-          orientation : window.orientation
-        });
-        game.emit('orientationnotsupported', {
+        emit('orientationnotsupported', {
           orientation : window.orientation
         });
       }
-      else {
-        game.emit('orientationchange', {
-          orientation : window.orientation
-        });
-      }
+      
+      game.emit('orientationchange', {
+        orientation : window.orientation
+      });
+
     });
 
     // Setup default behaviour for orientation not supported events
