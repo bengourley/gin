@@ -333,7 +333,7 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
       });
       
       // If there are still frames left, recurse
-      if (animationData.frames > 0) {
+      if (animationData.frames > 1) {
         setTimeout(function () {
           entity.animateSprite(animationData);
         },
