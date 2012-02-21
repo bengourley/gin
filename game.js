@@ -402,7 +402,7 @@
       }
       else if (orientationSetting === 'portrait' &&
             (window.orientation === 90 || window.orientation === -90)) {
-        emit('orientationnotsupported', {
+        game.emit('orientationnotsupported', {
           orientation : window.orientation
         });
       }
