@@ -232,7 +232,7 @@
   };
 
   /*
-   * Make a transition between scenese with the
+   * Make a transition between scenes with the
    * given options.
    */
   util.sceneTransition = function (from, to, transition) {
@@ -257,6 +257,7 @@
             to.transitionProps.callback &&
               to.transitionProps.callback(from.context, to.context);
             from.context.remove();
+            to.emit('transitionend');
           }
         }
       );
