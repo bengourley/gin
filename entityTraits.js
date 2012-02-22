@@ -354,3 +354,12 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
   };
 
 }, ['position']);
+
+
+Game.registerEntityTrait('element', function (entity, element, context) {
+
+  entity.getElement = function () {
+    return element;
+  };
+
+});

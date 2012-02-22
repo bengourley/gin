@@ -8,9 +8,7 @@
       id : properties.id,
       scene: properties.scene,
       traits: ['text', 'position']
-    });
-
-    scorer.setPosition({
+    }).setBounds(false, false).setPosition({
       x : properties.x,
       y : properties.y
     });
@@ -51,7 +49,7 @@
     return ui;
   };
 
-  entityCreator.createTimer = function(properties, callback) {
+  entityCreator.simpleTimer = function (properties, callback) {
     
     var timer = Game.entity({
         id : properties.id,
@@ -74,18 +72,20 @@
       properties.after = '';
     }
 
+    // Check if update fn was passed, if not write te
     timer.text(properties.before + seconds + properties.after);
 
-      var timerInterval = setInterval(function () {
-        seconds--;
-        timer.text(properties.before + seconds + properties.after);
-        if (seconds <= 0) {
-          clearInterval(timerInterval);
-          if (callback !== undefined) {
-            callback();
-          }
-          }
-      }, 1000);
+    var timerInterval = setInterval(function () {
+      seconds--;
+      timer.text(properties.before + seconds + properties.after);
+      if (seconds <= 0) {
+        clearInterval(timerInterval);
+        if (callback !== undefined) {
+          callback();
+        }
+        }
+    }, 1000);
+
   };
 
   Game.entityCreator = entityCreator;
