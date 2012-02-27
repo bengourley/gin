@@ -384,11 +384,15 @@
   };
 
   /*
-   * Handle orientation changes. Binds a function to the `window.orientationchange`, which generates
-   * game events depending on the orientationSetting parameter. This can either be `landscape` or `portrait`.
+   * Handle orientation changes. Binds a function to the
+   * `window.orientationchange`, which generates
+   * game events depending on the orientationSetting parameter.
+   * This can either be `landscape` or `portrait`.
    *
-   * Provides some default behaviour in the form of alert boxes when the orientation is changed to an angle
-   * which is unsupported. This can be removed by calling game.unlistenEventType on orientationnotsupported`.
+   * Provides some default behaviour in the form of alert boxes
+   * when the orientation is changed to an angle which is unsupported.
+   * This can be removed by calling game.unlistenEventType on
+   * `orientationnotsupported`.
    */
   util.handleOrientation = function (orientationSetting) {
     
@@ -446,16 +450,19 @@
         total = assets.length;
 
     assets.forEach(function (asset) {
-      
+
+      if (!/\.(jpg|png|jpeg|gif|svg)$/.test(asset))
+        throw new Error('Asset loader currently only supports preloading of images');
+        
       var img = new Image();
-      
+    
       $(img).bind('load', function () {
         loaded += 1;
         progress(loaded / total);
         if (loaded === assets.length) callback();
       });
 
-      $(img).bind('error', function () {
+      $(img).bind('error', function (e) {
         throw new Error('Failed to load asset `' + asset + '`');
       });
 
