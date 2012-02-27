@@ -105,7 +105,10 @@
       currentScene.context.show();
     }
 
-    if (previousScene) previousScene.destroy();
+    if (previousScene) {
+      if (!transition) previousScene.context.remove();
+      previousScene.destroy();
+    }
 
     return game;
 
