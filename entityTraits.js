@@ -258,7 +258,9 @@ Game.registerEntityTrait('transition', function (entity, element, context) {
               if (keyframe.cb !== undefined) {
                 keyframe.cb();
               }
-              next();
+              if (next !== undefined) {
+                next();
+              }
             };
           };
 
