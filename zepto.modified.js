@@ -825,7 +825,10 @@ window.Zepto = Zepto;
 
     wrappedCallback = function(){
       var props = {};
-      props[prefix + 'transition'] = props[prefix + 'animation-name'] = 'none';
+      props[prefix + 'transition-property'] = 'none';
+      props[prefix + 'transition-duration'] = '0s';
+      props[prefix + 'transition-timing-function'] = 'linear';
+      props[prefix + 'animation-name'] = 'none';
       $(this).css(props);
       callback && callback.call(this);
     }
