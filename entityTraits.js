@@ -229,11 +229,12 @@ Game.registerEntityTrait('transition', function (entity, element, context) {
       return transition;
     };
 
-    transition.keyframe = function (time, easing, css) {
+    transition.keyframe = function (time, easing, css, cb) {
       keyframes.push({
         time : time,
         css : css,
-        easing : easing
+        easing : easing,
+        cb : cb
       });
       return transition;
     };
@@ -249,10 +250,16 @@ Game.registerEntityTrait('transition', function (entity, element, context) {
           return callback;
 
         } else {
-        
-          var after = runone(keyframes.shift());
+          
+          var after = function () {
+            if (keyframe.cb !== undefined) {
+              keyframe.cb();
+            }
+            return runone(keyframes.shift());
+          };
+
           return function () {
-            element.animate(keyframe.css, keyframe.time, keyframe.easing, after);
+            element.animate(keyframe.css, keyframe.time, keyframe.easing, after());
           };
 
         }
