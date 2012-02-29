@@ -252,10 +252,13 @@ Game.registerEntityTrait('transition', function (entity, element, context) {
         } else {
           
           var after = function () {
-            if (keyframe.cb !== undefined) {
-              keyframe.cb();
-            }
-            return runone(keyframes.shift());
+            var next = runone(keyframes.shift());
+            return function () {
+              if (keyframe.cb !== undefined) {
+                keyframe.cb();
+              }
+              next();
+            };
           };
 
           return function () {
@@ -320,6 +323,15 @@ Game.registerEntityTrait('lifespan', function (entity, element, context) {
 });
 
 Game.registerEntityTrait('animated-sprite', function (entity, element, context) {
+
+  var frameTimeout;
+
+  var die = entity.die;
+
+  entity.die = function () {
+    clearTimeout(frameTimeout);
+    die();
+  };
   
   // Run a single frame
   entity.animateSprite = function (animationData) {
@@ -341,7 +353,7 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
       
       // If there are still frames left, recurse
       if (animationData.frames > 1) {
-        setTimeout(function () {
+        frameTimeout = setTimeout(function () {
           entity.animateSprite(animationData);
         },
         1000 / animationData.fps);
@@ -351,7 +363,7 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
         animationData.currentPos = 0;
         animationData.frames = animationData.initialFrames;
         
-        setTimeout(function () {
+        frameTimeout = setTimeout(function () {
           entity.animateSprite(animationData);
         },
         1000 / animationData.fps);
