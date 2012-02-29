@@ -229,12 +229,13 @@ Game.registerEntityTrait('transition', function (entity, element, context) {
       return transition;
     };
 
-    transition.keyframe = function (time, easing, css, cb) {
+    transition.keyframe = function (time, easing, css, cb, start) {
       keyframes.push({
         time : time,
         css : css,
         easing : easing,
-        cb : cb
+        cb : cb,
+        start : start
       });
       return transition;
     };
@@ -262,6 +263,9 @@ Game.registerEntityTrait('transition', function (entity, element, context) {
           };
 
           return function () {
+            if (keyframe.start !== undefined) {
+              keyframe.start();
+            }
             element.animate(keyframe.css, keyframe.time, keyframe.easing, after());
           };
 
