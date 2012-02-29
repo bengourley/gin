@@ -234,11 +234,13 @@ Game.registerEntityTrait('transition', function (entity, element, context) {
       return transition;
     };
 
-    transition.keyframe = function (time, easing, css) {
+    transition.keyframe = function (time, easing, css, cb, start) {
       keyframes.push({
         time : time,
         css : css,
-        easing : easing
+        easing : easing,
+        cb : cb,
+        start : start
       });
       return transition;
     };
@@ -254,10 +256,24 @@ Game.registerEntityTrait('transition', function (entity, element, context) {
           return callback;
 
         } else {
-        
-          var after = runone(keyframes.shift());
+          
+          var after = function () {
+            var next = runone(keyframes.shift());
+            return function () {
+              if (keyframe.cb !== undefined) {
+                keyframe.cb();
+              }
+              if (next !== undefined) {
+                next();
+              }
+            };
+          };
+
           return function () {
-            element.animate(keyframe.css, keyframe.time, keyframe.easing, after);
+            if (keyframe.start !== undefined) {
+              keyframe.start();
+            }
+            element.animate(keyframe.css, keyframe.time, keyframe.easing, after());
           };
 
         }
@@ -318,6 +334,15 @@ Game.registerEntityTrait('lifespan', function (entity, element, context) {
 });
 
 Game.registerEntityTrait('animated-sprite', function (entity, element, context) {
+
+  var frameTimeout;
+
+  var die = entity.die;
+
+  entity.die = function () {
+    clearTimeout(frameTimeout);
+    die();
+  };
   
   // Run a single frame
   entity.animateSprite = function (animationData) {
@@ -339,7 +364,7 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
       
       // If there are still frames left, recurse
       if (animationData.frames > 1) {
-        setTimeout(function () {
+        frameTimeout = setTimeout(function () {
           entity.animateSprite(animationData);
         },
         1000 / animationData.fps);
@@ -349,7 +374,7 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
         animationData.currentPos = 0;
         animationData.frames = animationData.initialFrames;
         
-        setTimeout(function () {
+        frameTimeout = setTimeout(function () {
           entity.animateSprite(animationData);
         },
         1000 / animationData.fps);

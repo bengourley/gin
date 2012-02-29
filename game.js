@@ -190,6 +190,12 @@
         element = $('<div/>')
                     .attr('id', properties.id)
                     .addClass(properties.elementClass || '');
+
+
+    entity.die = function () {
+      Game.unlisten(entity);
+      properties.scene.removeEntity(entity, element);
+    };
     
     entity.traits = entity.traits || [];
 
@@ -215,11 +221,6 @@
     });
 
     properties.scene.addEntity(entity, element);
-
-    entity.die = function () {
-      Game.unlisten(entity);
-      properties.scene.removeEntity(entity, element);
-    };
 
     return entity;
 
@@ -340,6 +341,9 @@
       scene.name = name;
       scene.destroy = function () {
         if (destroy) destroy(scene);
+        scene.getEntities().forEach(function (entity) {
+          entity.die();
+        });
         game.unlisten(scene);
       };
 
