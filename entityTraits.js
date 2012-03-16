@@ -2,12 +2,15 @@ Game.registerEntityTrait('draggable', function (entity, element, context) {
 
   var trait = {};
 
-  var touchy = document.ontouchstart === undefined;
-  var start = touchy ? 'mousedown' : 'touchstart',
-      move = touchy ? 'mousemove' : 'touchmove',
-      end = touchy ? 'mouseup' : 'touchend';
+  var mousey = document.ontouchstart === undefined;
+  var start = mousey ? 'mousedown' : 'touchstart',
+      move = mousey ? 'mousemove' : 'touchmove',
+      end = mousey ? 'mouseup' : 'touchend';
 
   trait.startDrag = function (e) {
+
+    if (!mousey && e.touches.length > 1) return;
+
     if (!entity.lockDrag) {
       e.preventDefault();
       trait.handleOffset = {
@@ -18,18 +21,20 @@ Game.registerEntityTrait('draggable', function (entity, element, context) {
               e.targetTouches[0].pageY - element.offset().top :
               e.clientY - element.offset().top
       };
-      context.bind(move + '.drag', trait.updatePosition);
-      context.bind(end + '.drag', trait.endDrag);
+      $(document).bind(move + '.drag', trait.updatePosition);
+      $(document).bind(end + '.drag', trait.endDrag);
     }
   };
 
   trait.endDrag = function (e) {
-    context.unbind(
+    $(document).unbind(
       move + '.drag ' + end + '.drag'
     );
   };
 
   trait.updatePosition = function (e) {
+
+    if (!mousey && e.touches.length > 1) return;
 
     var x = e.targetTouches ?
               e.targetTouches[0].pageX - trait.handleOffset.x :
