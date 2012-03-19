@@ -1,0 +1,17 @@
+{
+  "author": "Ben Gourley",
+  "name": "gin",
+  "description": "An interactive app/game framework for modern devices",
+  "version": "0.0.1",
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/bengourley/gin.git"
+  },
+  "main": "gin.js",
+  "dependencies": {},
+  "devDependencies": {},
+  "optionalDependencies": {},
+  "engines": {
+    "node": "*"
+  }
+}
