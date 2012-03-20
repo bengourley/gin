@@ -1,5 +1,5 @@
 /*
- * Game.js
+ * Core.js
  *
  * A Framework for iPad targetted HTML5 games. Exposes
  * a public interface at window#Game.
