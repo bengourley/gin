@@ -1,4 +1,4 @@
-Game.registerEntityTrait('draggable', function (entity, element, context) {
+Gin.registerEntityTrait('draggable', function (entity, element, context) {
 
   var trait = {};
 
@@ -56,13 +56,13 @@ Game.registerEntityTrait('draggable', function (entity, element, context) {
 
 }, ['position']);
 
-Game.registerEntityTrait('text', function (entity, element, context) {
+Gin.registerEntityTrait('text', function (entity, element, context) {
   entity.text = function (text) {
     element.text(text);
   };
 });
 
-Game.registerEntityTrait('position', function (entity, element, context) {
+Gin.registerEntityTrait('position', function (entity, element, context) {
   
   var x = 0,
       y = 0,
@@ -79,11 +79,11 @@ Game.registerEntityTrait('position', function (entity, element, context) {
       top : 0,
       '-webkit-transform' : 'translate3d(' +
         (bounds.x || bounds.x === 0
-          ? Math.max(bounds.x, Math.min(x, Game.width() - bounds.x - element.width()))
+          ? Math.max(bounds.x, Math.min(x, Gin.width() - bounds.x - element.width()))
           : x) +
         'px, ' +
         (bounds.y || bounds.y === 0
-        ? Math.max(bounds.y, Math.min(y, Game.height() - bounds.y - element.height()))
+        ? Math.max(bounds.y, Math.min(y, Gin.height() - bounds.y - element.height()))
         : y) +
         'px, 0px)'
     });
@@ -110,7 +110,7 @@ Game.registerEntityTrait('position', function (entity, element, context) {
 
 });
 
-Game.registerEntityTrait('collider', function (entity, element, context) {
+Gin.registerEntityTrait('collider', function (entity, element, context) {
 
   var setPosition = entity.setPosition;
   
@@ -128,7 +128,7 @@ Game.registerEntityTrait('collider', function (entity, element, context) {
       
       if (a1.x2 >= a2.x1 && a1.x1 <= a2.x2 &&
               a1.y2 >= a2.y1 && a1.y1 <= a2.y2) {
-        Game.emit('collision', {
+        Gin.emit('collision', {
           entities : { a : collider, b : entity }
         });
       }
@@ -176,15 +176,15 @@ Game.registerEntityTrait('collider', function (entity, element, context) {
 
 }, ['position', 'listener']);
 
-Game.registerEntityTrait('listener', function (entity, element, context) {
+Gin.registerEntityTrait('listener', function (entity, element, context) {
   
   entity.listen = function (name, callback) {
-    Game.listen(name, callback, entity);
+    Gin.listen(name, callback, entity);
   };
 
 });
 
-Game.registerEntityTrait('opacity', function (entity, element, context) {
+Gin.registerEntityTrait('opacity', function (entity, element, context) {
 
   var opacity = 1;
   
@@ -202,7 +202,7 @@ Game.registerEntityTrait('opacity', function (entity, element, context) {
 
 });
 
-Game.registerEntityTrait('class', function (entity, element, context) {
+Gin.registerEntityTrait('class', function (entity, element, context) {
   
   entity.setClass = function (cn) {
     element.addClass(cn);
@@ -211,7 +211,7 @@ Game.registerEntityTrait('class', function (entity, element, context) {
 
 });
 
-Game.registerEntityTrait('dompuppet', function (entity, element, context) {
+Gin.registerEntityTrait('dompuppet', function (entity, element, context) {
 
   var puppet;
   
@@ -223,7 +223,7 @@ Game.registerEntityTrait('dompuppet', function (entity, element, context) {
 
 }, ['position']);
 
-Game.registerEntityTrait('transition', function (entity, element, context) {
+Gin.registerEntityTrait('transition', function (entity, element, context) {
   
   entity.getTransitionManager = function () {
 
@@ -298,7 +298,7 @@ Game.registerEntityTrait('transition', function (entity, element, context) {
 
 }, ['position']);
 
-Game.registerEntityTrait('velocity', function (entity, element, context) {
+Gin.registerEntityTrait('velocity', function (entity, element, context) {
   
   var velocity = { x : 0, y : 0 };
 
@@ -315,7 +315,7 @@ Game.registerEntityTrait('velocity', function (entity, element, context) {
 
 }, ['position']);
 
-Game.registerEntityTrait('lifespan', function (entity, element, context) {
+Gin.registerEntityTrait('lifespan', function (entity, element, context) {
   
   entity.lifespan = 0;
 
@@ -341,7 +341,7 @@ Game.registerEntityTrait('lifespan', function (entity, element, context) {
 
 });
 
-Game.registerEntityTrait('animated-sprite', function (entity, element, context) {
+Gin.registerEntityTrait('animated-sprite', function (entity, element, context) {
 
   var frameTimeout;
 
@@ -394,7 +394,7 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
 }, ['position']);
 
 
-Game.registerEntityTrait('element', function (entity, element, context) {
+Gin.registerEntityTrait('element', function (entity, element, context) {
 
   entity.getElement = function () {
     return element;

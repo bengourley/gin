@@ -5,7 +5,7 @@
    * fade, slideLeft, slideRight, slideUp, slideDown
    */
 
-  Game.registerSceneTransition('fade', function () {
+  Gin.registerSceneTransition('fade', function () {
 
     var to = {}, from = {};
     to.start = { display : 'block', opacity : 0 };
@@ -14,7 +14,7 @@
 
   });
 
-  Game.registerSceneTransition('slideLeft', function () {
+  Gin.registerSceneTransition('slideLeft', function () {
     
     var to = {}, from = {};
 
@@ -46,7 +46,7 @@
 
   });
 
-  Game.registerSceneTransition('slideRight', function () {
+  Gin.registerSceneTransition('slideRight', function () {
     
     var to = {}, from = {};
 
@@ -78,7 +78,7 @@
 
   });
 
-  Game.registerSceneTransition('slideUp', function () {
+  Gin.registerSceneTransition('slideUp', function () {
     
     var to = {}, from = {};
 
@@ -110,7 +110,7 @@
 
   });
 
-  Game.registerSceneTransition('slideDown', function () {
+  Gin.registerSceneTransition('slideDown', function () {
     
     var to = {}, from = {};
 

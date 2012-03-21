@@ -1434,8 +1434,7 @@ window.Zepto = Zepto;
 /*
  * Core.js
  *
- * A Framework for iPad targetted HTML5 games. Exposes
- * a public interface at window#Game.
+ * The core of the Gin framework
  *
  * Author: Ben Gourley - 2012
  *
@@ -1449,8 +1448,8 @@ window.Zepto = Zepto;
   if (!$)
     throw new Error('Zepto.js is required to run Game.js');
 
-  // Game context
-  var game = {};
+  // Core context
+  var gin = {};
 
   // Utils context
   var util = {};
@@ -1464,9 +1463,9 @@ window.Zepto = Zepto;
       entityTraits = {};
 
   /*
-   * Initialise the game.
+   * Initialise gin.
    */
-  game.init = function (options) {
+  gin.init = function (options) {
 
     stage = $('<div/>')
               .attr('id', 'stage')
@@ -1482,41 +1481,41 @@ window.Zepto = Zepto;
     // Deal with orientation
     util.handleOrientation(options.orientation);
 
-    game.emit('ready');
+    gin.emit('ready');
 
-    return game;
+    return gin;
 
   };
 
   /*
-   * Expose canvas width.
+   * Expose stage width.
    */
-  game.width = function() {
+  gin.width = function() {
     return stage.width();
   };
 
   /*
-   * Expose canvas height.
+   * Expose stage height.
    */
-  game.height = function() {
+  gin.height = function() {
     return stage.height();
   };
 
   /*
-   * Add a scene to the game
+   * Add a scene to the app
    */
-  game.addScene = function (name, init, run, destroy) {
+  gin.addScene = function (name, init, run, destroy) {
     if (scenes[name]) {
       throw new Error('A scene named \'' + name + '\' already exists');
     }
     scenes[name] = util.sceneCreator(name, init, run, destroy);
-    return game;
+    return gin;
   };
 
   /*
    * Run a scene
    */
-  game.runScene = function (name, transition, data) {
+  gin.runScene = function (name, transition, data) {
 
     if (!scenes[name])
       throw new Error('A scene named \'' + name + '\' does not exist');
@@ -1543,27 +1542,27 @@ window.Zepto = Zepto;
       previousScene.destroy();
     }
 
-    return game;
+    return gin;
 
   };
 
   /*
-   * Binds a callback to a game event
+   * Binds a callback to a gin event
    */
-  game.listen = function (event, callback, listener) {
+  gin.listen = function (event, callback, listener) {
     listeners.push({
       event : event,
       callback : callback,
       obj : listener
     });
-    return game;
+    return gin;
   };
 
   /*
    * Remove all events from the event stack that are bound
    * to the given object.
    */
-  game.unlisten = function (obj) {
+  gin.unlisten = function (obj) {
 
     var newListeners = [];
     listeners.forEach(function (listener) {
@@ -1579,7 +1578,7 @@ window.Zepto = Zepto;
       }
     });
     listeners = newListeners;
-    return game;
+    return gin;
 
   };
 
@@ -1587,7 +1586,7 @@ window.Zepto = Zepto;
    * Executes all callbacks listening
    * for the given event
    */
-  game.emit = function (event, data) {
+  gin.emit = function (event, data) {
     listeners.forEach(function (listener) {
       if (event === listener.event) {
         listener.callback({
@@ -1596,11 +1595,11 @@ window.Zepto = Zepto;
         });
       }
     });
-    return game;
+    return gin;
   };
 
   /*
-   * Creates a game entity. Properties must be an object in
+   * Creates a gin entity. Properties must be an object in
    * the form:
    *
    *    {
@@ -1609,7 +1608,7 @@ window.Zepto = Zepto;
    *      ... plus optional properties
    *    }
    */
-  game.entity = function (properties) {
+  gin.entity = function (properties) {
     
     if (!properties || !properties.id || !properties.scene) {
       throw new Error(
@@ -1660,12 +1659,12 @@ window.Zepto = Zepto;
   };
 
   /*
-   * Expose `registerSceneTransition()` to Game interface, so
+   * Expose `registerSceneTransition()` to gin interface, so
    * transitions can be extended.
    */
-  game.registerSceneTransition = function (from, to, transition) {
+  gin.registerSceneTransition = function (from, to, transition) {
     util.registerSceneTransition(from, to, transition);
-    return game;
+    return gin;
   };
 
   /*
@@ -1737,9 +1736,9 @@ window.Zepto = Zepto;
    * Expose `registerEntityTrait()` to Game interface, so
    * traits can be extended.
    */
-  game.registerEntityTrait = function (name, applyTrait, dependencies) {
+  gin.registerEntityTrait = function (name, applyTrait, dependencies) {
     util.registerEntityTrait(name, applyTrait, dependencies);
-    return game;
+    return gin;
   };
 
   /*
@@ -1777,16 +1776,16 @@ window.Zepto = Zepto;
         scene.getEntities().forEach(function (entity) {
           entity.die();
         });
-        game.unlisten(scene);
+        gin.unlisten(scene);
       };
 
       scene.listen = function (event, callback) {
-        game.listen('scene-' + name + '.' + event, callback, scene);
+        gin.listen('scene-' + name + '.' + event, callback, scene);
         return scene;
       };
 
       scene.emit = function (event) {
-        game.emit('scene-' + name + '.' + event);
+        gin.emit('scene-' + name + '.' + event);
         return scene;
       };
 
@@ -1826,40 +1825,40 @@ window.Zepto = Zepto;
   /*
    * Handle orientation changes. Binds a function to the
    * `window.orientationchange`, which generates
-   * game events depending on the orientationSetting parameter.
+   * gin events depending on the orientationSetting parameter.
    * This can either be `landscape` or `portrait`.
    *
    * Provides some default behaviour in the form of alert boxes
    * when the orientation is changed to an angle which is unsupported.
-   * This can be removed by calling game.unlistenEventType on
+   * This can be removed by calling gin.unlistenEventType on
    * `orientationnotsupported`.
    */
   util.handleOrientation = function (orientationSetting) {
     
-    // Emit correct game events when orientation changes
+    // Emit correct gin events when orientation changes
     $(window).bind('orientationchange', function () {
 
       if (orientationSetting === 'landscape' &&
             (window.orientation === 0 || window.orientation === 180)) {
-        game.emit('orientationnotsupported', {
+        gin.emit('orientationnotsupported', {
           orientation : window.orientation
         });
       }
       else if (orientationSetting === 'portrait' &&
             (window.orientation === 90 || window.orientation === -90)) {
-        game.emit('orientationnotsupported', {
+        gin.emit('orientationnotsupported', {
           orientation : window.orientation
         });
       }
       
-      game.emit('orientationchange', {
+      gin.emit('orientationchange', {
         orientation : window.orientation
       });
 
     });
 
     // Setup default behaviour for orientation not supported events
-    game.listen('orientationnotsupported', function() {
+    gin.listen('orientationnotsupported', function() {
       alert('return to ' + orientationSetting + ' mode');
     });
 
@@ -1874,7 +1873,7 @@ window.Zepto = Zepto;
    * If a load error occurs (i.e. an asset 404s) this function
    * throws.
    */
-  game.assetLoader = function (assets, progress, callback) {
+  gin.assetLoader = function (assets, progress, callback) {
 
     if (!Array.isArray(assets))
       throw new Error('Asset loader requires an array of assets');
@@ -1910,12 +1909,12 @@ window.Zepto = Zepto;
 
     });
 
-    return game;
+    return gin;
 
   };
 
-  // Expose the game object globally
-  window.Game = game;
+  // Expose the gin object globally
+  window.Gin = gin;
 
 }());(function() {
 
@@ -2007,9 +2006,9 @@ window.Zepto = Zepto;
 
   };
 
-  Game.entityCreator = entityCreator;
+  Gin.entityCreator = entityCreator;
 
-}());Game.registerEntityTrait('draggable', function (entity, element, context) {
+}());Gin.registerEntityTrait('draggable', function (entity, element, context) {
 
   var trait = {};
 
@@ -2067,13 +2066,13 @@ window.Zepto = Zepto;
 
 }, ['position']);
 
-Game.registerEntityTrait('text', function (entity, element, context) {
+Gin.registerEntityTrait('text', function (entity, element, context) {
   entity.text = function (text) {
     element.text(text);
   };
 });
 
-Game.registerEntityTrait('position', function (entity, element, context) {
+Gin.registerEntityTrait('position', function (entity, element, context) {
   
   var x = 0,
       y = 0,
@@ -2090,11 +2089,11 @@ Game.registerEntityTrait('position', function (entity, element, context) {
       top : 0,
       '-webkit-transform' : 'translate3d(' +
         (bounds.x || bounds.x === 0
-          ? Math.max(bounds.x, Math.min(x, Game.width() - bounds.x - element.width()))
+          ? Math.max(bounds.x, Math.min(x, Gin.width() - bounds.x - element.width()))
           : x) +
         'px, ' +
         (bounds.y || bounds.y === 0
-        ? Math.max(bounds.y, Math.min(y, Game.height() - bounds.y - element.height()))
+        ? Math.max(bounds.y, Math.min(y, Gin.height() - bounds.y - element.height()))
         : y) +
         'px, 0px)'
     });
@@ -2121,7 +2120,7 @@ Game.registerEntityTrait('position', function (entity, element, context) {
 
 });
 
-Game.registerEntityTrait('collider', function (entity, element, context) {
+Gin.registerEntityTrait('collider', function (entity, element, context) {
 
   var setPosition = entity.setPosition;
   
@@ -2139,7 +2138,7 @@ Game.registerEntityTrait('collider', function (entity, element, context) {
       
       if (a1.x2 >= a2.x1 && a1.x1 <= a2.x2 &&
               a1.y2 >= a2.y1 && a1.y1 <= a2.y2) {
-        Game.emit('collision', {
+        Gin.emit('collision', {
           entities : { a : collider, b : entity }
         });
       }
@@ -2187,15 +2186,15 @@ Game.registerEntityTrait('collider', function (entity, element, context) {
 
 }, ['position', 'listener']);
 
-Game.registerEntityTrait('listener', function (entity, element, context) {
+Gin.registerEntityTrait('listener', function (entity, element, context) {
   
   entity.listen = function (name, callback) {
-    Game.listen(name, callback, entity);
+    Gin.listen(name, callback, entity);
   };
 
 });
 
-Game.registerEntityTrait('opacity', function (entity, element, context) {
+Gin.registerEntityTrait('opacity', function (entity, element, context) {
 
   var opacity = 1;
   
@@ -2213,7 +2212,7 @@ Game.registerEntityTrait('opacity', function (entity, element, context) {
 
 });
 
-Game.registerEntityTrait('class', function (entity, element, context) {
+Gin.registerEntityTrait('class', function (entity, element, context) {
   
   entity.setClass = function (cn) {
     element.addClass(cn);
@@ -2222,7 +2221,7 @@ Game.registerEntityTrait('class', function (entity, element, context) {
 
 });
 
-Game.registerEntityTrait('dompuppet', function (entity, element, context) {
+Gin.registerEntityTrait('dompuppet', function (entity, element, context) {
 
   var puppet;
   
@@ -2234,7 +2233,7 @@ Game.registerEntityTrait('dompuppet', function (entity, element, context) {
 
 }, ['position']);
 
-Game.registerEntityTrait('transition', function (entity, element, context) {
+Gin.registerEntityTrait('transition', function (entity, element, context) {
   
   entity.getTransitionManager = function () {
 
@@ -2309,7 +2308,7 @@ Game.registerEntityTrait('transition', function (entity, element, context) {
 
 }, ['position']);
 
-Game.registerEntityTrait('velocity', function (entity, element, context) {
+Gin.registerEntityTrait('velocity', function (entity, element, context) {
   
   var velocity = { x : 0, y : 0 };
 
@@ -2326,7 +2325,7 @@ Game.registerEntityTrait('velocity', function (entity, element, context) {
 
 }, ['position']);
 
-Game.registerEntityTrait('lifespan', function (entity, element, context) {
+Gin.registerEntityTrait('lifespan', function (entity, element, context) {
   
   entity.lifespan = 0;
 
@@ -2352,7 +2351,7 @@ Game.registerEntityTrait('lifespan', function (entity, element, context) {
 
 });
 
-Game.registerEntityTrait('animated-sprite', function (entity, element, context) {
+Gin.registerEntityTrait('animated-sprite', function (entity, element, context) {
 
   var frameTimeout;
 
@@ -2405,7 +2404,7 @@ Game.registerEntityTrait('animated-sprite', function (entity, element, context) 
 }, ['position']);
 
 
-Game.registerEntityTrait('element', function (entity, element, context) {
+Gin.registerEntityTrait('element', function (entity, element, context) {
 
   entity.getElement = function () {
     return element;
@@ -2419,7 +2418,7 @@ Game.registerEntityTrait('element', function (entity, element, context) {
    * fade, slideLeft, slideRight, slideUp, slideDown
    */
 
-  Game.registerSceneTransition('fade', function () {
+  Gin.registerSceneTransition('fade', function () {
 
     var to = {}, from = {};
     to.start = { display : 'block', opacity : 0 };
@@ -2428,7 +2427,7 @@ Game.registerEntityTrait('element', function (entity, element, context) {
 
   });
 
-  Game.registerSceneTransition('slideLeft', function () {
+  Gin.registerSceneTransition('slideLeft', function () {
     
     var to = {}, from = {};
 
@@ -2460,7 +2459,7 @@ Game.registerEntityTrait('element', function (entity, element, context) {
 
   });
 
-  Game.registerSceneTransition('slideRight', function () {
+  Gin.registerSceneTransition('slideRight', function () {
     
     var to = {}, from = {};
 
@@ -2492,7 +2491,7 @@ Game.registerEntityTrait('element', function (entity, element, context) {
 
   });
 
-  Game.registerSceneTransition('slideUp', function () {
+  Gin.registerSceneTransition('slideUp', function () {
     
     var to = {}, from = {};
 
@@ -2524,7 +2523,7 @@ Game.registerEntityTrait('element', function (entity, element, context) {
 
   });
 
-  Game.registerSceneTransition('slideDown', function () {
+  Gin.registerSceneTransition('slideDown', function () {
     
     var to = {}, from = {};
 

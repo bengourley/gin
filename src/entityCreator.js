@@ -88,6 +88,6 @@
 
   };
 
-  Game.entityCreator = entityCreator;
+  Gin.entityCreator = entityCreator;
 
 }());
